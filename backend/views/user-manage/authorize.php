@@ -1,12 +1,13 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\UserManage */
 
-$this->title = Yii::t('app', 'Authorize To:').$model->username;
+$this->title = Yii::t('app', 'Authorize To:').$model->user->username;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Manages'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -21,12 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <table class="table">
             <tr>
               <th scope="row"><?=Yii::t('app', 'Username')?></th>
-              <td><?=$model->username?></td>
+              <td><?=$model->user->username?></td>
             </tr>
             <tr>
               <th scope="row"><?=Yii::t('app', 'Roles Assign')?></th>
               <td>
-                  到这里啦
+                  <?php
+                   //echo $form->field($model, 'assignments')->checkboxList($allRoles);
+                   echo $form->field($model, 'assignments')->checkboxList(ArrayHelper::map($allRoles,'name', 'description'));
+                    ?>
+                  
               </td>
             </tr>
             </table>

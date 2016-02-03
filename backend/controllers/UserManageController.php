@@ -4,10 +4,12 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\UserManage;
+use backend\models\forms\UserAssignForm;
 use backend\models\search\UserManageSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
 
 /**
  * UserManageController implements the CRUD actions for UserManage model.
@@ -155,29 +157,44 @@ class UserManageController extends Controller
      */
     public function actionAuthorize($id)
     {
-        if (($model = UserManage::findOne($id)) !== null)
+        $model=new UserAssignForm();
+
+        if (($model->user = UserManage::findOne($id)) !== null)
         {
             $auth = Yii::$app->authManager;
-            $assignments=$auth->getAssignments($id);
+
+            $array_dbassignments=array();
+            if(is_array($dbassignments=$auth->getAssignments($id)))
+            {
+                foreach ($dbassignments as $key => $value) {
+                    $array_dbassignments[]=$value->roleName;
+                }
+            }
+
+            $model->assignments=$array_dbassignments;
             $allRoles=$auth->getRoles();
-            // echo "<pre>";
-            // print_r($assignments);
-            // print_r($allRoles);
-            // exit();
-            $request = Yii::$app->request;
-            if($request->post())
-            {//save process
+                
+            if ($model->load(Yii::$app->request->post())) {
+                $assignments=$model->assignments;
+                $auth->revokeAll($id);
+                
+                if(is_array($assignments))
+                {
+                    foreach($assignments as $rolename)
+                    {
+                        $role=$auth->getRole($rolename);
+                        $auth->assign($role,$id);
+                    } 
+                }
+               
 
             }
-            else
-            {//show process
-                return $this->render('authorize', [
-                    'model' => $model,
-                    'assignments'=>$assignments,
-                    'allRoles'=>$allRoles
-                ]);
-            }
+            return $this->render('authorize', [
+                'model' => $model,
+                'allRoles'=>$allRoles,
+            ]);
         }
+
     }
 
     /**
@@ -195,4 +212,7 @@ class UserManageController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+
+
 }

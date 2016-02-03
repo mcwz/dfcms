@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'type',
                 'filter' => Html::activeDropDownList($searchModel, 'type', \backend\models\AuthItem::getSearchStatus(), ['class' => 'form-control']),
                 'value'=> function($model){
-                    if($model->type==1)
+                    if($model->type==$model::AUTH_ITEM_ROLE)
                     {
                         return Yii::t('app', 'AUTH_ITEM_ROLE');
                     }
@@ -46,7 +46,21 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app', 'Operate'),'template' => ' {view} {update} {delete} {addchild}',
+                'buttons' => [
+                'addchild' => function ($url, $model, $key) {
+                        if($model->type==$model::AUTH_ITEM_ROLE){
+                            return  Html::a('<span class="glyphicon glyphicon-lock"></span>', $url, ['title' => Yii::t('app', 'Add Child To Role')] ) ;
+                        }
+                        else
+                        {
+                            return ;
+                        }
+                      
+                     },
+                ],
+               //'headerOptions' => ['width' => '180']
+            ],
         ],
     ]); ?>
 
