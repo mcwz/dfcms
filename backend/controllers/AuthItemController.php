@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use backend\models\AuthItem;
 use backend\models\search\AuthItemSearch;
+use backend\models\forms\RoleAddChildForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -144,9 +145,15 @@ class AuthItemController extends Controller
     }
 
 
-    public function acctionAddchild($roleid)
+    public function actionAddChild($id)
     {
-        
+        $model=new RoleAddChildForm();
+        if (($model->role = AuthItem::findOne($id)) !== null)
+        {
+
+            //return $this->redirect(['index']);
+        }
+
     }
 
     /**

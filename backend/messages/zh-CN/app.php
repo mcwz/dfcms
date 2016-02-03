@@ -17,14 +17,15 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Add Child To Role' => '给角色配置模块',
     'Auth Key' => '',
     'Data' => '',
     'ID' => '',
+    'Role' => '角色',
     'Role List' => '@@角色列表@@',
     'ALL' => '全部',
     'AUTH_ITEM_MODULE' => '模块',
     'AUTH_ITEM_ROLE' => '角色',
+    'Add Child To Role' => '给角色配置模块',
     'Are you sure you want to delete this item?' => '您确定删除该条内容么？',
     'Auth Items' => '角色或模块列表',
     'Authorize' => '赋权',
@@ -41,6 +42,7 @@ return [
     'MenuSysModule' => '系统模块',
     'MenuSysconfig' => '系统设置',
     'MenuUserManage' => '用户管理',
+    'Module List to add' => '模块列表',
     'Name' => '名称',
     'Operate' => '操作',
     'Password' => '密码',

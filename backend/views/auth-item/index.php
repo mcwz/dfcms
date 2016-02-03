@@ -46,9 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app', 'Operate'),'template' => ' {view} {update} {delete} {addchild}',
+            ['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app', 'Operate'),'template' => ' {view} {update} {delete} {add-child}',
                 'buttons' => [
-                'addchild' => function ($url, $model, $key) {
+                'add-child' => function ($url, $model, $key) {
                         if($model->type==$model::AUTH_ITEM_ROLE){
                             return  Html::a('<span class="glyphicon glyphicon-lock"></span>', $url, ['title' => Yii::t('app', 'Add Child To Role')] ) ;
                         }
