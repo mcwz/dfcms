@@ -41,6 +41,7 @@ AppAsset::register($this);
                                 </div>
                             </div>
                             <?= $content ?>
+
                         </div>
                         <div class="login-footer">
                             

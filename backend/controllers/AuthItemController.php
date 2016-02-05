@@ -6,15 +6,20 @@ use Yii;
 use backend\models\AuthItem;
 use backend\models\search\AuthItemSearch;
 use backend\models\forms\RoleAddChildForm;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * AuthItemController implements the CRUD actions for AuthItem model.
  */
-class AuthItemController extends Controller
+class AuthItemController extends BaseController
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("rbacModule");
+    }
+
     public function behaviors()
     {
         return [
@@ -33,13 +38,16 @@ class AuthItemController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AuthItemSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+
+            $searchModel = new AuthItemSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+
     }
 
     /**
@@ -148,10 +156,42 @@ class AuthItemController extends Controller
     public function actionAddChild($id)
     {
         $model=new RoleAddChildForm();
-        if (($model->role = AuthItem::findOne($id)) !== null)
+        $auth = Yii::$app->authManager;
+        if (($model->role = $auth->getRole($id)) !== null)
         {
 
-            //return $this->redirect(['index']);
+
+            $array_db_permissions=array();
+            if(is_array($db_permissions=$auth->getPermissionsByRole($id)))
+            {
+                foreach ($db_permissions as $key => $value) {
+                    $array_db_permissions[]=$value->name;
+                }
+            }
+
+            $model->childItems=$array_db_permissions;
+            $allPermissions=$auth->getPermissions();
+
+            if ($model->load(Yii::$app->request->post())) {
+                $childItems=$model->childItems;
+                $parent=$model->role;
+                $auth->removeChildren($parent);
+
+                if(is_array($childItems))
+                {
+                    foreach($childItems as $permission_name)
+                    {
+                        $permission=$auth->getPermission($permission_name);
+                        $auth->addChild($parent,$permission);
+                    }
+                }
+
+
+            }
+            return $this->render('add-child', [
+                'model' => $model,
+                'allPermissions'=>$allPermissions,
+            ]);
         }
 
     }

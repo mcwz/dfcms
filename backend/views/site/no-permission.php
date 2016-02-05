@@ -7,14 +7,14 @@
 
 use yii\helpers\Html;
 
-$this->title = Yii::t('app', 'There was an error occurred');
+$this->title = Yii::t('app', 'You have not permission to access this page.');
 ?>
 <div class="site-error">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
     <div class="alert alert-danger">
-        <?= nl2br(Html::encode($message)) ?>
+        <?=Yii::t('app', 'You have not permission to access this page.') ?>
     </div>
 
     <p>

@@ -14,8 +14,13 @@ use yii\filters\VerbFilter;
 /**
  * UserManageController implements the CRUD actions for UserManage model.
  */
-class UserManageController extends Controller
+class UserManageController extends BaseController
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("userManage");
+    }
     public function behaviors()
     {
         return [

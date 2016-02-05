@@ -13,8 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>&nbsp;</p>
-
+    <?php if($message!==''){
+        echo '<p class="bg-danger">';
+            echo $message;
+    echo '</p>';
+}?>
     <div class="row">
         <div class="col-lg-12">
             <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>

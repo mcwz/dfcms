@@ -147,11 +147,7 @@ if (!Yii::$app->user->isGuest) {
                                         <ul class="nav navbar-nav">
                                             <li><a href="<?=Url::to("/auth-item/index")?>"><?=Yii::t('app', 'MenuSysModule')?></a>
                                             </li>
-                                            <li><a href="ui-kits/grid.html">角色管理</a>
-                                            </li>
                                             <li><a href="<?=Url::to("/user-manage/index")?>"><?=Yii::t('app', 'MenuUserManage')?></a>
-                                            </li>
-                                            <li><a href="ui-kits/card.html">权限管理</a>
                                             </li>
                                         </ul>
                                     </div>
