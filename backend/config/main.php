@@ -19,6 +19,20 @@ return [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' =>false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.sohu.com',  //每种邮箱的host配置不一样
+                'username' => 'yali114@sohu.com',
+                'password' => 'GXD100688yx',
+                'port' => '25',
+                //'encryption' => 'tls',
+
+            ],
+            'messageConfig'=>[
+                'charset'=>'UTF-8',
+                'from'=>['yali114@sohu.com'=>'admin']
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -44,10 +58,15 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
                 [
+                    'class' => 'yii\log\DbTarget',
+                    'categories' => ['operations'],
+                    'logVars' => [],
+                    'logTable'=>'operations_log'
+                ],
+                [
                     'class' => 'yii\log\EmailTarget',
                     'levels' => ['error'],
                     'message' => [
-                        'from' => ['log@example.com'],
                         'to' => ['yali114@sina.com'],
                         'subject' => 'Database errors at example.com',
                     ],
