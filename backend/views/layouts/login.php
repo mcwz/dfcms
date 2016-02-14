@@ -53,6 +53,11 @@ AppAsset::register($this);
     </div>
 
 <?php $this->endBody() ?>
+<script>
+    $(function(){
+        $("#loginform-username").focus();
+    });
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>

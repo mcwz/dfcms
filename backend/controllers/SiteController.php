@@ -63,6 +63,10 @@ class SiteController extends Controller
         return $this->render('no-permission');
     }
 
+    /**
+     * @param string $error
+     * @return string|\yii\web\Response
+     */
     public function actionLogin($error='')
     {
         $this->layout='login';
@@ -72,7 +76,9 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            Yii::info( Yii::t('app/log', "user(username:{username}) login success", ['username' =>$model->username]), 'operations');
+            $this->redirect(Yii::$app->user->getReturnUrl());
+            //return $this->goBack();
         } else {
             $message=($error=='pl'?Yii::t('app','Please Login'):'');
             return $this->render('login', [
@@ -84,8 +90,9 @@ class SiteController extends Controller
 
     public function actionLogout()
     {
+        $username=Yii::$app->user->identity->username;
         Yii::$app->user->logout();
-
+        Yii::info( Yii::t('app/log', "user(username:{username}) logout", ['username' =>$username]), 'operations');
         return $this->goHome();
     }
 }

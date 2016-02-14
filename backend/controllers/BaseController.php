@@ -20,6 +20,7 @@ class BaseController extends Controller
             }
             else
             {
+                Yii::$app->user->setReturnUrl(Yii::$app->request->url);
                 $this->redirect('/site/login?error=pl');
                 return false;
             }
@@ -33,6 +34,7 @@ class BaseController extends Controller
     protected function checkRBAC($permissions)
     {
         if (!\Yii::$app->user->can($permissions)) {
+            Yii::warning( Yii::t('app/log', "user(username:{username}) visit unauthorized web page(requestedRoute:{requestedRoute},defined moduleName:{moduleName})", ['username' =>Yii::$app->user->identity->username,'requestedRoute' =>$this->module->requestedRoute,'moduleName'=>$permissions ]),'operations');
             $this->redirect("/site/no-permission");
         }
     }

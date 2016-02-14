@@ -6,7 +6,6 @@ use Yii;
 use backend\models\UserManage;
 use backend\models\forms\UserAssignForm;
 use backend\models\search\UserManageSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -21,6 +20,7 @@ class UserManageController extends BaseController
         parent::init();
         $this->checkRBAC("userManage");
     }
+
     public function behaviors()
     {
         return [
@@ -39,9 +39,9 @@ class UserManageController extends BaseController
      */
     public function actionIndex()
     {
+        Yii::info( Yii::t('app/log', 'visit user list page'), 'operations');
         $searchModel = new UserManageSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -55,6 +55,7 @@ class UserManageController extends BaseController
      */
     public function actionView($id)
     {
+        Yii::info( Yii::t('app/log', "check user(id:{user_id}) detail", ['user_id' => $id]), 'operations');
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -78,6 +79,7 @@ class UserManageController extends BaseController
             if($model->save())
             {
                 $saved_flag=true;
+                Yii::info( Yii::t('app/log', "save user(username:{username})", ['username' => $model->username]), 'operations');
             }
             
         } 
@@ -125,6 +127,7 @@ class UserManageController extends BaseController
             $model->updated_at=time();
             if($model->save())
             {
+                Yii::info( Yii::t('app/log', "update user(username:{username})", ['username' => $model->username]), 'operations');
                 $update_flag=true;
             }            
         } 
@@ -150,7 +153,7 @@ class UserManageController extends BaseController
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::info( Yii::t('app/log', "delete user(user_id:{user_id})", ['user_id' =>$id]), 'operations');
         return $this->redirect(['index']);
     }
 
@@ -189,7 +192,8 @@ class UserManageController extends BaseController
                     {
                         $role=$auth->getRole($rolename);
                         $auth->assign($role,$id);
-                    } 
+                    }
+                    Yii::info( Yii::t('app/log', "user(user_id:{user_id}) assign", ['user_id' =>$id]), 'operations');
                 }
                
 

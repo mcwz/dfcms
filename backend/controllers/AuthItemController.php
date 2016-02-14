@@ -39,7 +39,7 @@ class AuthItemController extends BaseController
     public function actionIndex()
     {
 
-
+        Yii::info( Yii::t('app/log', "visit authItem list page"), 'operations');
             $searchModel = new AuthItemSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -75,9 +75,16 @@ class AuthItemController extends BaseController
 
             $auth = Yii::$app->authManager;
             if($model->type==AuthItem::AUTH_ITEM_MODULE)
+            {
+                Yii::info( Yii::t('app/log', "Create module(module name:{moduleName})", ['moduleName' =>$model->name]), 'operations');
                 $role_permission = $auth->createPermission($model->name);
+            }
             else
+            {
+                Yii::info( Yii::t('app/log', "Create role(role name:{roleName})", ['roleName' =>$model->name]), 'operations');
                 $role_permission = $auth->createRole($model->name);
+            }
+
             $role_permission->description = $model->description;
             $auth->add($role_permission);
             return $this->redirect(['view', 'id' => $model->name]);
@@ -105,10 +112,12 @@ class AuthItemController extends BaseController
             if($role_or_permission==AuthItem::AUTH_ITEM_MODULE)
             {
                 $role_permission= $auth->getPermission($id);
+                Yii::info( Yii::t('app/log', "Update module(module name:{moduleName})", ['moduleName' =>$model->name]), 'operations');
             }
             else
             {
                 $role_permission= $auth->getRole($id);
+                Yii::info( Yii::t('app/log', "Update role(role name:{roleName})", ['roleName' =>$model->name]), 'operations');
             }
             $role_permission->description=$model->description;
             $auth->update($model->name,$role_permission);
@@ -139,10 +148,12 @@ class AuthItemController extends BaseController
             if($role_or_permission==AuthItem::AUTH_ITEM_MODULE)
             {
                 $rolePermission=$auth->getPermission($model->name);
+                Yii::info( Yii::t('app/log', "Delete module(module name:{moduleName})", ['moduleName' =>$model->name]), 'operations');
             }
             else
             {
                 $rolePermission=$auth->getRole($model->name);
+                Yii::info( Yii::t('app/log', "Delete role(role name:{roleName})", ['roleName' =>$model->name]), 'operations');
             }
 
             $auth->remove($rolePermission);
@@ -184,6 +195,7 @@ class AuthItemController extends BaseController
                         $permission=$auth->getPermission($permission_name);
                         $auth->addChild($parent,$permission);
                     }
+                    Yii::info( Yii::t('app/log', "Add Module to role(role name:{roleName})", ['roleName' =>$id]), 'operations');
                 }
 
 

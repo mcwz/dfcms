@@ -17,14 +17,43 @@ return [
             'identityClass' => 'backend\models\User',
             'enableAutoLogin' => true,
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                    'logVars' => [],
+                    'logFile'=>'@backend/runtime/logs/error/error.log',
+                    //'maxFileSize' => 2,
+                    //'maxLogFiles' => 2,
+                ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'categories' => ['operations'],
+                    'logVars' => [],
+                    'logFile'=>'@backend/runtime/logs/operations.log',
+                    'maxFileSize' => 1024*5,
+                    'maxLogFiles' => 100,
+                ],
+                [
+                    'class' => 'yii\log\DbTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+                [
+                    'class' => 'yii\log\EmailTarget',
+                    'levels' => ['error'],
+                    'message' => [
+                        'from' => ['log@example.com'],
+                        'to' => ['yali114@sina.com'],
+                        'subject' => 'Database errors at example.com',
+                    ],
                 ],
             ],
+            'flushInterval' => 1,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -35,6 +64,20 @@ return [
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+        ],
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    //'basePath' => '@app/messages',
+                    //'sourceLanguage' => 'en-US',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/error' => 'error.php',
+                        'app/log' => 'app/log.php',
+                    ],
+                ],
+            ],
         ],
     ],
     'language'=>'zh-CN',
