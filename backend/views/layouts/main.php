@@ -110,10 +110,15 @@ AppAsset::register($this);
                                                 echo Yii::$app->user->identity->username;
                                             }
                                             ?></h4>
-                                        <p>emily_hart@email.com</p>
+                                        <p><?php
+                                            if(Yii::$app->user->id!=null)
+                                            {
+                                                echo Yii::$app->user->identity->email;
+                                            }
+                                            ?></p>
                                         <div class="btn-group margin-bottom-2x" role="group">
 
-                                            <button type="button" class="btn btn-default"><i class="fa fa-user"></i> Profile</button>
+                                            <a href="<?=Url::to('/my-profile/change-profile')?>" class="btn btn-default"><i class="fa fa-user"></i> <?=Yii::t('app','Profile')?></a>
 <?php
 if (!Yii::$app->user->isGuest) {
     echo "<a data-method=\"post\" href=\"".Url::to('/site/logout')."\" class=\"btn btn-default\"><i class=\"fa fa-sign-out\"></i> ".Yii::t('app', 'Logout')."</a>";

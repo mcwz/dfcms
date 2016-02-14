@@ -63,14 +63,14 @@ return [
                     'logVars' => [],
                     'logTable'=>'operations_log'
                 ],
-                [
-                    'class' => 'yii\log\EmailTarget',
-                    'levels' => ['error'],
-                    'message' => [
-                        'to' => ['yali114@sina.com'],
-                        'subject' => 'Database errors at example.com',
-                    ],
-                ],
+//                [
+//                    'class' => 'yii\log\EmailTarget',
+//                    'levels' => ['error'],
+//                    'message' => [
+//                        'to' => ['yali114@sina.com'],
+//                        'subject' => 'Database errors at example.com',
+//                    ],
+//                ],
             ],
             'flushInterval' => 1,
         ],

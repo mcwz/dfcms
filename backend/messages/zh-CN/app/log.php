@@ -17,7 +17,16 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Add Module to role(role name:{roleName})' => '',
+    'Create module(module name:{moduleName})' => '',
+    'Create role(role name:{roleName})' => '',
+    'Delete module(module name:{moduleName})' => '',
+    'Delete role(role name:{roleName})' => '',
+    'Update module(module name:{moduleName})' => '',
+    'Update role(role name:{roleName})' => '',
+    'login error(username:{username}) password:{password}' => '',
     'user(username:{username}) visit unauthorized web page(requestedRoute:{requestedRoute},defined moduleName:{moduleName})' => '',
+    'visit authItem list page' => '',
     'check user(id:{user_id}) detail' => '查看用户(id:{user_id})详细信息',
     'delete user(user_id:{user_id})' => '删除用户(user_id:{user_id})',
     'save user(username:{username})' => '保存用户(username:{username})',

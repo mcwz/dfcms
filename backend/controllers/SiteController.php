@@ -53,16 +53,6 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionEmail()
-    {
-        Yii::$app->mailer->compose()
-            ->setFrom('from@domain.com')
-            ->setTo('to@domain.com')
-            ->setSubject('Message subject')
-            ->setTextBody('Plain text content')
-            ->setHtmlBody('<b>HTML content</b>')
-            ->send();
-    }
     public function actionIndex()
     {
         return $this->render('index');
