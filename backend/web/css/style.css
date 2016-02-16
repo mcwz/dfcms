@@ -1245,3 +1245,7 @@ div.required label:after {
 
 .site-login p{line-height: 28px;
   height:28px;}
+.bg-primary,.bg-success,.bg-info,.bg-warning,.bg-danger{
+  padding: 5px;
+  line-height:26px;
+}

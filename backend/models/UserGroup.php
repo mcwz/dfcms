@@ -21,8 +21,8 @@ class UserGroup extends UserGroupBase
     public function rules()
     {
         return [
-            [['pid', 'path', 'name', 'created_at', 'updated_at', 'pos'], 'required'],
-            [['pid', 'created_at', 'updated_at', 'pos'], 'integer'],
+            [['pid', 'path', 'name', 'created_at', 'updated_at', 'pos', 'status'], 'required'],
+            [['pid', 'created_at', 'updated_at', 'pos', 'status'], 'integer'],
             [['path'], 'string', 'max' => 250],
             [['name', 'description'], 'string', 'max' => 200]
         ];
@@ -33,9 +33,64 @@ class UserGroup extends UserGroupBase
     public static function getAllGroup($include_default)
     {
         $connection = \Yii::$app->db;
-        $command = $connection->createCommand('SELECT * FROM user_group');
+        $command = $connection->createCommand('SELECT * FROM user_group WHERE status>0');
         $allGroup = $command->queryAll();
-        $allGroup['0']=Yii::t('app','Choose a Group');
-        return $allGroup;
+
+        $groupArr=array();
+
+        if($include_default)
+        {
+            $groupArr['0']=Yii::t('app','As root group');
+        }
+
+        foreach($allGroup as $aGroup)
+        {
+            $pathDeep=substr_count($aGroup['path'],'/');
+            $pathStr='';
+            if($pathDeep>1)
+            {
+                $pathStr='|';
+                for($i=1;$i<$pathDeep;$i++)
+                {
+                    $pathStr.='-';
+                }
+            }
+            $groupArr[$aGroup['id']]=$pathStr.$aGroup['name'];
+        }
+
+
+
+
+        return $groupArr;
+    }
+
+    public static function generatePath($model)
+    {
+        if($model->pid===0)
+        {
+            return '/'.$model->id;
+        }
+        else
+        {
+            $parent_userGroup = UserGroup::find()
+                ->where(['id' => $model->pid])
+                ->one();
+
+            return $parent_userGroup->path.'/'.$model->id;
+        }
+
+    }
+
+    /**
+     * @param $model
+     * @return mixed
+     */
+    public static function generateDefaultValue($model)
+    {
+        $model->created_at=time();
+        $model->updated_at=0;
+        $model->path='/';
+        $model->status=1;
+        return $model;
     }
 }

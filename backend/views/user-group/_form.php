@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use backend\libtool\ModelError;
+use yii\widgets\Menu;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\UserGroup */
@@ -11,6 +13,7 @@ use yii\widgets\ActiveForm;
 <div class="user-group-form">
 
     <?php $form = ActiveForm::begin(); ?>
+    <?=ModelError::generateErrors($model->getErrors()); ?>
     <div class="row">
     <?= $form->field($model, 'name',['options'=>['class'=>'col-sm-4']])->textInput(['maxlength' => true]) ?>
     </div>

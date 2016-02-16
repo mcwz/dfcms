@@ -61,10 +61,32 @@ class UserGroupController extends Controller
     public function actionCreate()
     {
         $model = new UserGroup();
+        $save_flag=false;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model=UserGroup::generateDefaultValue($model);
+            $transaction = \Yii::$app->db->beginTransaction();
+            try{
+                if($model->save())
+                {
+                    $model->path=UserGroup::generatePath($model);
+                    $model->save();
+                    $transaction->commit();
+                    $save_flag=true;
+                }
+            }catch(\Exception $e){
+                $transaction->rollBack();
+                $model->isNewRecord = true;
+            }
+
+        }
+
+        if($save_flag)
+        {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+        }
+        else
+        {
             return $this->render('create', [
                 'model' => $model,
             ]);

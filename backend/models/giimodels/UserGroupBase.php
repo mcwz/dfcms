@@ -15,6 +15,7 @@ use Yii;
  * @property string $created_at
  * @property string $updated_at
  * @property integer $pos
+ * @property integer $status
  */
 class UserGroupBase extends \yii\db\ActiveRecord
 {
@@ -32,8 +33,8 @@ class UserGroupBase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pid', 'path', 'name', 'description', 'created_at', 'updated_at', 'pos'], 'required'],
-            [['pid', 'created_at', 'updated_at', 'pos'], 'integer'],
+            [['pid', 'path', 'name', 'description', 'created_at', 'updated_at', 'pos', 'status'], 'required'],
+            [['pid', 'created_at', 'updated_at', 'pos', 'status'], 'integer'],
             [['path'], 'string', 'max' => 250],
             [['name', 'description'], 'string', 'max' => 200]
         ];
@@ -53,6 +54,7 @@ class UserGroupBase extends \yii\db\ActiveRecord
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'pos' => Yii::t('app', 'Pos'),
+            'status' => Yii::t('app', 'Status'),
         ];
     }
 }
