@@ -18,9 +18,14 @@
  */
 return [
     'Auth Key' => '',
+    'Create User Group' => '新建用户分组',
     'Data' => '',
     'ID' => '',
-    'Save success.' => '保存成功。',
+    'MenuUserGroup' => '用户分组',
+    'Path' => '',
+    'Pid' => '父级',
+    'Pos' => '排序',
+    'User Groups' => '用户分组',
     'Role List' => '@@角色列表@@',
     'ALL' => '全部',
     'AUTH_ITEM_MODULE' => '模块',
@@ -69,6 +74,7 @@ return [
     'STATUS_ACTIVE' => '启用',
     'STATUS_DELETED' => '已删除',
     'Save' => '保存',
+    'Save success.' => '保存成功。',
     'Search' => '搜索',
     'Status' => '状态',
     'SystemLogin' => '系统登录',

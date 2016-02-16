@@ -162,6 +162,8 @@ if (!Yii::$app->user->isGuest) {
                                             </li>
                                             <li><a href="<?=Url::to("/user-manage/index")?>"><?=Yii::t('app', 'MenuUserManage')?></a>
                                             </li>
+                                            <li><a href="<?=Url::to("/user-group/index")?>"><?=Yii::t('app', 'MenuUserGroup')?></a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

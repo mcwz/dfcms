@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use backend\models\UserManage;
+
 /**
  * Site controller
  */
@@ -52,36 +53,32 @@ class MyProfileController extends Controller
         if (\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-        $user=$this->findModel();
+        $user = $this->findModel();
         $model = new ChangeProfileForm();
-        $model->email=$user->email;
+        $model->email = $user->email;
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-            if($user!==null)
-            {
-                $update_flag=false;
-                if($model->newPassword!=='')
-                {
-                    $user->password_hash=Yii::$app->security->generatePasswordHash($model->newPassword);
-                    $update_flag=true;
+            if ($user !== null) {
+                $update_flag = false;
+                if ($model->newPassword !== '') {
+                    $user->password_hash = Yii::$app->security->generatePasswordHash($model->newPassword);
+                    $update_flag = true;
                 }
-                if($model->email!=='')
-                {
-                    $user->email=$model->email;
-                    $update_flag=true;
+                if ($model->email !== '') {
+                    $user->email = $model->email;
+                    $update_flag = true;
                 }
-                if($update_flag)
-                {
-                    $user->updated_at=time();
+                if ($update_flag) {
+                    $user->updated_at = time();
                     $user->setScenario('Update');
                     $user->save();
-                    $model->password='';
-                    $model->newPassword='';
-                    $model->confirmPassword='';
-                    $model->email=$user->email;
+                    $model->password = '';
+                    $model->newPassword = '';
+                    $model->confirmPassword = '';
+                    $model->email = $user->email;
                     return $this->render('change-profile', [
                         'model' => $model,
-                        'message'=> Yii::t('app','Save success.')
+                        'message' => Yii::t('app', 'Save success.')
                     ]);
                 }
             }
@@ -101,7 +98,7 @@ class MyProfileController extends Controller
      */
     protected function findModel()
     {
-        if (($model =  UserManage::findOne(Yii::$app->user->identity->getId())) !== null) {
+        if (($model = UserManage::findOne(Yii::$app->user->identity->getId())) !== null) {
             return $model;
         }
         return null;
