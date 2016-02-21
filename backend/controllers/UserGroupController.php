@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\libtool\ZTreeDataTransfer;
 
 /**
  * UserGroupController implements the CRUD actions for UserGroup model.
@@ -36,8 +37,13 @@ class UserGroupController extends Controller
             'query' => UserGroup::find(),
         ]);
 
+
+        $allGroup=UserGroup::getAllGroupData();
+        $allGroupJson=ZTreeDataTransfer::array2simpleJson($allGroup);
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'allGroup'=>$allGroupJson,
         ]);
     }
 
@@ -48,8 +54,11 @@ class UserGroupController extends Controller
      */
     public function actionView($id)
     {
+        $allGroup=UserGroup::getAllGroupData();
+        $allGroupJson=ZTreeDataTransfer::array2simpleJson($allGroup,array('id','pid','name'),$id);
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'allGroup'=>$allGroupJson,
         ]);
     }
 
@@ -103,11 +112,18 @@ class UserGroupController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $allGroup=UserGroup::getAllGroupData();
+        $allGroupJson=ZTreeDataTransfer::array2simpleJson($allGroup);
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->path=UserGroup::generatePath($model);
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'allGroup'=>$allGroupJson,
             ]);
         }
     }

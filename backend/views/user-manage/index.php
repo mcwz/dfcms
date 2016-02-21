@@ -47,14 +47,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value'=> function($model){
-                    return  date('Y-m-d H:i:s',$model->created_at);   //主要通过此种方式实现
+                    return  date('Y-m-d H:i:s',$model->created_at);
                 }
             ],
             [
                 'attribute' => 'updated_at',
                 'value'=>
                 function($model){
-                    return  date('Y-m-d H:i:s',$model->updated_at);   //主要通过此种方式实现
+                    return  date('Y-m-d H:i:s',$model->updated_at);
                 },
                 //'headerOptions' => ['width' => '170'],
             ],

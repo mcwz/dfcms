@@ -27,13 +27,27 @@ class UserGroup extends UserGroupBase
             [['name', 'description'], 'string', 'max' => 200]
         ];
     }
+
     /**
-     * @param boolean $include_default true for key 0 value root group
+     * @param $include_default, Generate please select info
+     * @param $new_update if update then don't select itself
+     * @return array
      */
-    public static function getAllGroup($include_default)
+    public static function getAllGroup($include_default, $update_id=0)
     {
         $connection = \Yii::$app->db;
-        $command = $connection->createCommand('SELECT * FROM user_group WHERE status>0');
+
+        if($update_id<=0)
+        {
+            $include_self='';
+        }
+        else
+        {
+            $include_self=' AND id<>'.$update_id.' ';
+        }
+
+        $sql_str='SELECT * FROM user_group WHERE status>0'.$include_self;
+        $command = $connection->createCommand($sql_str);
         $allGroup = $command->queryAll();
 
         $groupArr=array();
@@ -52,21 +66,30 @@ class UserGroup extends UserGroupBase
                 $pathStr='|';
                 for($i=1;$i<$pathDeep;$i++)
                 {
-                    $pathStr.='-';
+                    $pathStr.='--';
                 }
             }
             $groupArr[$aGroup['id']]=$pathStr.$aGroup['name'];
         }
-
-
-
-
         return $groupArr;
     }
 
+    public static function getAllGroupData()
+    {
+        $connection = \Yii::$app->db;
+        $sql_str='SELECT * FROM user_group order by pos';
+        $command = $connection->createCommand($sql_str);
+        $allGroup = $command->queryAll();
+        return $allGroup;
+    }
+
+    /**
+     * @param $model
+     * @return string
+     */
     public static function generatePath($model)
     {
-        if($model->pid===0)
+        if($model->pid==0)
         {
             return '/'.$model->id;
         }

@@ -1249,3 +1249,6 @@ div.required label:after {
   padding: 5px;
   line-height:26px;
 }
+
+.tree_left
+{position: fixed;height: 100%;overflow: auto}

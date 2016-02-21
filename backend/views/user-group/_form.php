@@ -21,7 +21,7 @@ use yii\widgets\Menu;
     <?= $form->field($model, 'description',['options'=>['class'=>'col-sm-6']])->textInput(['maxlength' => true]) ?>
     </div>
     <div class="row">
-    <?= $form->field($model, 'pid',['options'=>['class'=>'col-sm-4']])->dropDownList(\backend\models\UserGroup::getAllGroup(true)) ?>
+    <?= $form->field($model, 'pid',['options'=>['class'=>'col-sm-4']])->dropDownList(\backend\models\UserGroup::getAllGroup(true,$model->isNewRecord?(-1):$model->id)) ?>
     </div>
     <div class="row">
     <?= $form->field($model, 'pos',['options'=>['class'=>'col-sm-1']])->textInput() ?>
