@@ -5,7 +5,6 @@ namespace backend\controllers;
 use Yii;
 use backend\models\UserGroup;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\libtool\ZTreeDataTransfer;
@@ -13,7 +12,7 @@ use backend\libtool\ZTreeDataTransfer;
 /**
  * UserGroupController implements the CRUD actions for UserGroup model.
  */
-class UserGroupController extends Controller
+class UserGroupController extends BaseController
 {
     public function init()
     {
