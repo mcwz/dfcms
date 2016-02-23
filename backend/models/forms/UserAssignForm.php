@@ -10,6 +10,7 @@ use yii\base\Model;
 class UserAssignForm extends Model
 {
     public $assignments;
+    public $user_group_assign;
     public $user;
 
     /**
@@ -19,6 +20,7 @@ class UserAssignForm extends Model
     {
         return [
             ['assignments', 'safe'],
+            ['user_group_assign','safe']
         ];
     }
 
@@ -33,6 +35,7 @@ class UserAssignForm extends Model
     {
         return [
             'assignments' => Yii::t('app', 'User Assignments'),
+            'user_group_assign' => Yii::t('app', 'User Group Assign'),
             'user'=>Yii::t('app', 'User'),
         ];
     }

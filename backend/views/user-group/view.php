@@ -61,7 +61,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
         </div>
         <div class="col-md-9 col-md-offset-3">
-
+            <?php
+            if($message!='') {
+                ?>
+                <div class="row">
+                    <div class="alert-danger bg-warning"><?php echo Yii::t('app','HaveChild'); ?></div>
+                </div>
+                <?php
+            }
+            ?>
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [

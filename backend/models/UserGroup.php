@@ -74,6 +74,26 @@ class UserGroup extends UserGroupBase
         return $groupArr;
     }
 
+    /**
+     * @param $thisId
+     * @return bool
+     */
+    public static function haveSon($thisId)
+    {
+        $connection = \Yii::$app->db;
+        $command = $connection->createCommand('SELECT count(*) as record_count FROM user_group WHERE pid='.$thisId);
+        $result = $command->queryOne();
+        if($result['record_count']>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /**
+     * @return array
+     */
     public static function getAllGroupData()
     {
         $connection = \Yii::$app->db;

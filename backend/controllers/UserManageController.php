@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\UserGroup;
+use backend\models\UserGroupAssign;
 use Yii;
 use backend\models\UserManage;
 use backend\models\forms\UserAssignForm;
@@ -171,6 +173,7 @@ class UserManageController extends BaseController
         {
             $auth = Yii::$app->authManager;
 
+            //读取已经存在的权限
             $array_dbassignments=array();
             if(is_array($dbassignments=$auth->getAssignments($id)))
             {
@@ -179,8 +182,21 @@ class UserManageController extends BaseController
                 }
             }
 
+            //读取加入的用户组
+            $array_db_user_group_assign=array();
+            if(is_array($db_user_group_assign=UserGroupAssign::getUserGroupAssign($id)))
+            {
+                foreach ($db_user_group_assign as $key => $value) {
+                    $array_db_user_group_assign[]=$value['group_id'];
+                }
+            }
+
+            //将刚刚读取的已经赋值的内容转存给$model,以便于在展示页面的时候能显示默认值
             $model->assignments=$array_dbassignments;
+            $model->user_group_assign=$array_db_user_group_assign;
+
             $allRoles=$auth->getRoles();
+            $allGroup=UserGroup::getAllGroupData();
                 
             if ($model->load(Yii::$app->request->post())) {
                 $assignments=$model->assignments;
@@ -195,12 +211,14 @@ class UserManageController extends BaseController
                     }
                     Yii::info( Yii::t('app/log', "user(user_id:{user_id}) assign", ['user_id' =>$id]), 'operations');
                 }
-               
+
+                UserGroupAssign::setUserGroupAssign($id,$model->user_group_assign);
 
             }
             return $this->render('authorize', [
                 'model' => $model,
                 'allRoles'=>$allRoles,
+                'allGroups'=>$allGroup,
             ]);
         }
 

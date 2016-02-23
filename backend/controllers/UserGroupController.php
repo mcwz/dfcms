@@ -52,13 +52,14 @@ class UserGroupController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id,$message='')
     {
         $allGroup=UserGroup::getAllGroupData();
         $allGroupJson=ZTreeDataTransfer::array2simpleJson($allGroup,array('id','pid','name'),$id);
         return $this->render('view', [
             'model' => $this->findModel($id),
             'allGroup'=>$allGroupJson,
+            'message'=>$message,
         ]);
     }
 
@@ -136,8 +137,14 @@ class UserGroupController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        if(!UserGroup::haveSon($id))
+        {
+            $this->findModel($id)->delete();
+        }
+        else
+        {
+            return $this->redirect(['view', 'id' => $id,'message'=>'HaveChild']);
+        }
         return $this->redirect(['index']);
     }
 

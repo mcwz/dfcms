@@ -34,6 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
                   
               </td>
             </tr>
+                <tr>
+                    <th scope="row"><?=Yii::t('app', 'Group Assign')?></th>
+                    <td>
+                        <?php
+                        echo $form->field($model, 'user_group_assign')->checkboxList(ArrayHelper::map($allGroups,'id', 'name'));
+                        ?>
+
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
