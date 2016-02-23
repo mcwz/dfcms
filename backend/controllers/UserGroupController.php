@@ -15,6 +15,11 @@ use backend\libtool\ZTreeDataTransfer;
  */
 class UserGroupController extends Controller
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("userGroupManage");
+    }
     public function behaviors()
     {
         return [
