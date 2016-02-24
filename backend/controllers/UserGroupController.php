@@ -72,27 +72,33 @@ class UserGroupController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($pid=0)
     {
         $model = new UserGroup();
+        $pModel=null;
+        if($pid>0)
+        {
+            try{
+                $pModel=$this->findModel($pid);
+                if($pModel)
+                {
+                    $model->pid=$pModel->id;
+                }
+            }
+            catch(\Exception $e)
+            {
+
+            }
+
+        }
         $save_flag=false;
 
         if ($model->load(Yii::$app->request->post())) {
             $model=UserGroup::generateDefaultValue($model);
-            $transaction = \Yii::$app->db->beginTransaction();
-            try{
-                if($model->save())
-                {
-                    $model->path=UserGroup::generatePath($model);
-                    $model->save();
-                    $transaction->commit();
-                    $save_flag=true;
-                }
-            }catch(\Exception $e){
-                $transaction->rollBack();
-                $model->isNewRecord = true;
+            if($model->save())
+            {
+                $save_flag=true;
             }
-
         }
 
         if($save_flag)
@@ -101,8 +107,11 @@ class UserGroupController extends BaseController
         }
         else
         {
+            if(!$pModel)
+                $model->pid=0;
             return $this->render('create', [
                 'model' => $model,
+                'pModel'=>$pModel,
             ]);
         }
     }
@@ -122,7 +131,6 @@ class UserGroupController extends BaseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->path=UserGroup::generatePath($model);
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

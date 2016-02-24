@@ -20,9 +20,26 @@ use yii\widgets\Menu;
     <div class="row">
     <?= $form->field($model, 'description',['options'=>['class'=>'col-sm-6']])->textInput(['maxlength' => true]) ?>
     </div>
+    <?php
+
+    if(isset($pModel) && $pModel!=null)
+    {
+        ?>
     <div class="row">
-    <?= $form->field($model, 'pid',['options'=>['class'=>'col-sm-4']])->dropDownList(\backend\models\UserGroup::getAllGroup(true,$model->isNewRecord?(-1):$model->id)) ?>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'pid')->hiddenInput() ?>
+        <?php
+            echo $pModel->name;
+        ?>
+        </div>
     </div>
+    <?php
+    }
+    else
+    {
+    echo $form->field($model, 'pid')->hiddenInput()->label(false);
+    }
+    ?>
     <div class="row">
     <?= $form->field($model, 'pos',['options'=>['class'=>'col-sm-1']])->textInput() ?>
     </div>

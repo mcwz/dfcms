@@ -170,14 +170,13 @@ if (!Yii::$app->user->isGuest) {
                             </li>
                             <li class="panel panel-default dropdown">
                                 <a data-toggle="collapse" href="#dropdown-table">
-                                    <span class="icon fa fa-table"></span><span class="title">Table</span>
+                                    <span class="icon fa fa-table"></span><span class="title"><?=Yii::t('app','MenuContentConfig')?></span>
                                 </a>
                                 <!-- Dropdown level 1 -->
                                 <div id="dropdown-table" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
-                                            <li><a href="table/table.html">Table</a>
-                                            </li>
+                                            <li><a href="<?=Url::to("/nodes/index")?>"><?=Yii::t('app', 'MenuNodeManage')?></a>
                                             <li><a href="table/datatable.html">Datatable</a>
                                             </li>
                                         </ul>

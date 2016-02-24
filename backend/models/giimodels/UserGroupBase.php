@@ -35,7 +35,6 @@ class UserGroupBase extends \yii\db\ActiveRecord
         return [
             [['pid', 'path', 'name', 'description', 'created_at', 'updated_at', 'pos', 'status'], 'required'],
             [['pid', 'created_at', 'updated_at', 'pos', 'status'], 'integer'],
-            [['path'], 'string', 'max' => 250],
             [['name', 'description'], 'string', 'max' => 200]
         ];
     }
@@ -48,7 +47,6 @@ class UserGroupBase extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'pid' => Yii::t('app', 'Pid'),
-            'path' => Yii::t('app', 'Path'),
             'name' => Yii::t('app', 'Name'),
             'description' => Yii::t('app', 'Description'),
             'created_at' => Yii::t('app', 'Created At'),
