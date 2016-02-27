@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\libtool\ModelError;
-use yii\widgets\Menu;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\UserGroup */

@@ -76,7 +76,7 @@ class UserManageController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
             $model->password_hash=Yii::$app->security->generatePasswordHash($model->password_hash);
             $model->auth_key=Yii::$app->security->generateRandomString();
-            $model->updated_at=0;
+            $model->updated_at=time();
             $model->created_at = time();  
             if($model->save())
             {

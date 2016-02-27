@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use backend\widgets\ZTreeWidget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\search\NodesSearch */
@@ -11,8 +12,12 @@ $this->title = Yii::t('app', 'Nodes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="nodes-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="row">
+        <div class="col-md-3 tree_left">
+            <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>1]) ?>
+        </div>
+        <div class="col-md-9 col-md-offset-3">
+    <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -43,3 +48,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 </div>
+</div>
+    </div>

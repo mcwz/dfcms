@@ -8,6 +8,7 @@ use backend\models\search\NodesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\libtool\ZTreeDataTransfer;
 
 /**
  * NodesController implements the CRUD actions for Nodes model.
@@ -35,9 +36,13 @@ class NodesController extends Controller
         $searchModel = new NodesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'allNodes'=>$allNodesJson,
         ]);
     }
 
@@ -48,8 +53,11 @@ class NodesController extends Controller
      */
     public function actionView($id)
     {
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'allNodes'=>$allNodesJson
         ]);
     }
 
@@ -58,15 +66,37 @@ class NodesController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($pid=1)
     {
         $model = new Nodes();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        //获得父级节点
+        $pModel=$this->findModel($pid);
+
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
+
+        $save_flag=false;
+
+        if ($model->load(Yii::$app->request->post()) ) {
+            $model->status=1;
+            $model->created_at=time();
+            $model->updated_at=$model->created_at;
+            if($model->save())
+            {
+                $save_flag=true;
+            }
+        }
+        if($save_flag)
+        {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+        }
+        else {
+            $model->pid=$pModel->id;
             return $this->render('create', [
                 'model' => $model,
+                'allNodes'=>$allNodesJson,
+                'pModel'=>$pModel,
             ]);
         }
     }
@@ -80,12 +110,29 @@ class NodesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        //获得父级节点
+        $pModel=$this->findModel($model->pid);
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $update_flag=false;
+        if ($model->load(Yii::$app->request->post())) {
+            $model->updated_at=time();
+            if($model->save())
+            {
+                $update_flag=true;
+            }
+
+        }
+        if($update_flag)
+        {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+        }
+        else {
             return $this->render('update', [
                 'model' => $model,
+                'allNodes'=>$allNodesJson,
+                'pModel'=>$pModel
             ]);
         }
     }

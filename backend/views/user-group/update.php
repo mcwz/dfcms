@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\web\View;
 use backend\widgets\ZTreeWidget;
 
 /* @var $this yii\web\View */

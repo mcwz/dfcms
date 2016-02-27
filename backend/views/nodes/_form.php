@@ -11,27 +11,24 @@ use yii\widgets\ActiveForm;
 <div class="nodes-form">
 
     <?php $form = ActiveForm::begin(); ?>
-    <div class="row">
-    <?= $form->field($model, 'pid',['options'=>['class'=>'col-sm-4']])->textInput(['maxlength' => true]) ?>
-    </div>
+
     <div class="row">
     <?= $form->field($model, 'name',['options'=>['class'=>'col-sm-4']])->textInput(['maxlength' => true]) ?>
     </div>
     <div class="row">
+        <div class="col-sm-4 field-nodes-pid">
+            <label class="control-label">父级名称:</label>
+            <?=$pModel->name?><?= $form->field($model, 'pid')->hiddenInput()->label(false) ?>
+        </div>
+    </div>
+    <div class="row">
     <?= $form->field($model, 'description',['options'=>['class'=>'col-sm-6']])->textInput(['maxlength' => true]) ?>
     </div>
+
     <div class="row">
-    <?= $form->field($model, 'pos',['options'=>['class'=>'col-sm-2']])->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'type',['options'=>['class'=>'col-sm-2']])->dropDownList(\backend\models\Nodes::getType()) ?>
     </div>
-    <div class="row">
-    <?= $form->field($model, 'type',['options'=>['class'=>'col-sm-2']])->textInput() ?>
-    </div>
-    <div class="row">
-    <?= $form->field($model, 'attr_group_id')->textInput(['maxlength' => true]) ?>
-    </div>
-    <div class="row">
-    <?= $form->field($model, 'flow_group_id')->textInput(['maxlength' => true]) ?>
-    </div>
+
     <div class="row">
     <?= $form->field($model, 'path',['options'=>['class'=>'col-sm-4']])->textInput(['maxlength' => true]) ?>
     </div>

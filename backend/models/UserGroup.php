@@ -111,7 +111,7 @@ class UserGroup extends UserGroupBase
     public static function generateDefaultValue($model)
     {
         $model->created_at=time();
-        $model->updated_at=0;
+        $model->updated_at=time();
         $model->status=1;
         return $model;
     }
