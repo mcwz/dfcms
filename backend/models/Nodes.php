@@ -28,7 +28,9 @@ class Nodes extends NodesBase
     }
 
 
-
+    /**
+     * @return array
+     */
     public static function getAllNodesData()
     {
         $connection = \Yii::$app->db;
@@ -39,11 +41,38 @@ class Nodes extends NodesBase
     }
 
 
+    /**
+     * @return array
+     */
     public static function getType()
     {
         return [
             self::TYPE_NODE => Yii::t('app', 'TYPE_NODE'),
             self::TYPE_SITE => Yii::t('app', 'TYPE_SITE'),
         ];
+    }
+
+
+    public static function assignUserGroups($nodeId,$groupsId)
+    {
+        $connection = \Yii::$app->db;
+        $created_at=time();
+        $insert_array=array();
+        foreach($groupsId as $groupId)
+        {
+            $insert_array[]=array($nodeId,$groupId,$created_at);
+        }
+
+        $transaction =$connection->beginTransaction();
+        try
+        {
+            $connection->createCommand("DELETE FROM user_group_node WHERE node_id=".$nodeId)->execute();
+            $connection->createCommand()->batchInsert('user_group_node',array('node_id','user_group_id','created_at'),$insert_array)->execute();
+            $transaction->commit();
+        }
+        catch(\Exception $e)
+        {
+            $transaction ->rollBack();
+        }
     }
 }

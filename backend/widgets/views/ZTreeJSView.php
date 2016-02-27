@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $(function(){
 
-        var setting = {
+        var setting_<?=$treeName?> = {
             view: {
                 dblClickExpand: false,
                 showLine: true,
@@ -15,21 +15,20 @@
                     rootPId: ""
                 }
             },
-            callback: {
-                beforeClick: function(treeId, treeNode) {
-                    var zTree = $.fn.zTree.getZTreeObj("tree");
-                }
-            }
         };
 
 
-        var t = $("#tree");
-        var zNodes =<?php echo $treeData; ?>;
-        t = $.fn.zTree.init(t, setting, zNodes);
-        var zTree = $.fn.zTree.getZTreeObj("tree");
+        var t_<?=$treeName?> = $("#<?=$treeName?>");
+        var zNodes_<?=$treeName?> =<?php echo $treeData; ?>;
+        t_<?=$treeName?> = $.fn.zTree.init(t_<?=$treeName?>, setting_<?=$treeName?>, zNodes_<?=$treeName?>);
+        var zTree_<?=$treeName?> = $.fn.zTree.getZTreeObj("<?=$treeName?>");
         <?php
         if(isset($selectID) && $selectID!==null)
-            echo "zTree.selectNode(zTree.getNodeByParam(\"id\", ".$selectID."));";
+            echo "zTree_$treeName.selectNode(zTree_$treeName.getNodeByParam(\"id\", ".$selectID."));";
+
+        if($expandAll)
+            echo "zTree_$treeName.expandAll(true);";
         ?>
+
     });
 </script>

@@ -15,6 +15,8 @@ class ZTreeWidget extends Widget
 {
     public $treeData;
     public $selectID;
+    public $expandAll=false;
+    public $treeName="tree";
 
     public $key = null;
     public $pos = View::POS_END ;
@@ -30,7 +32,10 @@ class ZTreeWidget extends Widget
 
     public function run()
     {
-        $block = $this->render('ZTreeJSView',['treeData'=>$this->treeData,'selectID'=>$this->selectID]);
+        $block = $this->render('ZTreeJSView',['treeData'=>$this->treeData,
+            'selectID'=>$this->selectID,
+            'expandAll'=>$this->expandAll,
+            'treeName'=>$this->treeName]);
         $block = trim($block) ;
 
         $jsBlockPattern  = '|^<script[^>]*>(?P<block_content>.+?)</script>$|is';
@@ -38,6 +43,6 @@ class ZTreeWidget extends Widget
             $block =  $matches['block_content'];
         }
         $this->view->registerJs($block, $this->pos,$this->key) ;
-        return $this->render('ZTreeView');
+        return $this->render('ZTreeView',['treeName'=>$this->treeName]);
     }
 }

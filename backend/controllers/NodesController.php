@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\UserGroup;
 use Yii;
 use backend\models\Nodes;
 use backend\models\search\NodesSearch;
@@ -9,6 +10,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\libtool\ZTreeDataTransfer;
+use backend\models\forms\AssignNodesGroupForm;
 
 /**
  * NodesController implements the CRUD actions for Nodes model.
@@ -133,6 +135,32 @@ class NodesController extends Controller
                 'model' => $model,
                 'allNodes'=>$allNodesJson,
                 'pModel'=>$pModel
+            ]);
+        }
+    }
+
+
+    public function actionAssignGroups($id)
+    {
+        $model=new AssignNodesGroupForm();
+        $nodeModel=$this->findModel($id);
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
+        $allGroups=UserGroup::getAllGroupData();
+        $allGroupsJson=ZTreeDataTransfer::array2simpleJson($allGroups);
+
+        if ($model->load(Yii::$app->request->post())) {
+            $nodeId=$model->nodeId;
+            $groupId=$model->groupsId;
+
+            Nodes::assignUserGroups($nodeId,$groupId);
+            return $this->redirect(['assign-nodes', 'id' => $model->id]);
+        } else {
+            return $this->render('assign-nodes', [
+                'model' => $model,
+                'allNodes'=>$allNodesJson,
+                'nodeModel'=>$nodeModel,
+                'allGroups'=>$allGroupsJson,
             ]);
         }
     }

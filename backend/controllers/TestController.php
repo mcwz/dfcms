@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\dao\AuthItemDao;
 use Yii;
 use yii\web\Controller;
 
@@ -10,7 +11,6 @@ use yii\web\Controller;
  */
 class TestController extends Controller
 {
-
 
     public function actionEmail()
     {
