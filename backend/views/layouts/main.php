@@ -177,8 +177,7 @@ if (!Yii::$app->user->isGuest) {
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
                                             <li><a href="<?=Url::to("/nodes/index")?>"><?=Yii::t('app', 'MenuNodeManage')?></a>
-                                            <li><a href="table/datatable.html">Datatable</a>
-                                            </li>
+                                            <li><a href="<?=Url::to("/attr-group/index")?>"><?=Yii::t('app', 'MenuAttrGroupManage')?></a>
                                         </ul>
                                     </div>
                                 </div>

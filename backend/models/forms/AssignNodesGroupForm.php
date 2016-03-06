@@ -40,7 +40,7 @@ class AssignNodesGroupForm extends Model
     /**
      * @return bool
      */
-    private function groupIdIsNumArray()
+    public function groupIdIsNumArray()
     {
         foreach($this->groupsId as $groupId)
         {

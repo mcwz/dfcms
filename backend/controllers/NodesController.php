@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\AttrGroup;
+use backend\models\NodeAttrGroup;
 use backend\models\UserGroup;
 use Yii;
 use backend\models\Nodes;
@@ -146,15 +148,15 @@ class NodesController extends Controller
         $nodeModel=$this->findModel($id);
         $allNodes=Nodes::getAllNodesData();
         $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
+        $checkedArray=Nodes::getGroupsByNodeId($nodeModel->id);
         $allGroups=UserGroup::getAllGroupData();
-        $allGroupsJson=ZTreeDataTransfer::array2simpleJson($allGroups);
+        $allGroupsJson=ZTreeDataTransfer::array2CheckJson($allGroups,$checkedArray);
 
         if ($model->load(Yii::$app->request->post())) {
-            $nodeId=$model->nodeId;
-            $groupId=$model->groupsId;
-
+            $nodeId=$nodeModel->id;
+            $groupId=$model->groupsId===null?array():$model->groupsId;
             Nodes::assignUserGroups($nodeId,$groupId);
-            return $this->redirect(['assign-nodes', 'id' => $model->id]);
+            return $this->redirect(['assign-groups', 'id' => $nodeModel->id]);
         } else {
             return $this->render('assign-nodes', [
                 'model' => $model,
@@ -163,6 +165,31 @@ class NodesController extends Controller
                 'allGroups'=>$allGroupsJson,
             ]);
         }
+    }
+
+    public function actionAssignAttrGroup($id)
+    {
+        $node=$this->findModel($id);
+        $attr_groups=AttrGroup::getAttrGroups();
+        $node_attr_group=Nodes::getAssignedAttrGroup($id);
+
+        $allNodes=Nodes::getAllNodesData();
+        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes);
+
+        $model=new NodeAttrGroup();
+
+        if($model->load(Yii::$app->request->post()))
+        {
+            Nodes::deleteOldAttrGroupAssign($id);
+            $model->created_at=time();
+            $model->save();
+            $node_attr_group=Nodes::getAssignedAttrGroup($id);
+        }
+
+
+        $array_data=array('node'=>$node,'attr_group'=>$attr_groups,'node_attr_group'=>$node_attr_group,
+            'allNodes'=>$allNodesJson);
+        return $this->render('assign-attr-group',$array_data);
     }
 
     /**

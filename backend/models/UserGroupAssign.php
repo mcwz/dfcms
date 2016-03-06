@@ -51,7 +51,7 @@ class UserGroupAssign extends UserGroupAssignBase
        $transaction = $connection->beginTransaction();
        try {
             $connection->createCommand($sql_delete)->execute();
-            $sql=$connection->createCommand()->batchInsert('user_group_assign', ['user_id', 'group_id','created_at'], $insert_array)->execute();
+            $connection->createCommand()->batchInsert('user_group_assign', ['user_id', 'group_id','created_at'], $insert_array)->execute();
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();

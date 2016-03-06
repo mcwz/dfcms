@@ -52,8 +52,19 @@ class Nodes extends NodesBase
         ];
     }
 
+    public static function deleteOldAttrGroupAssign($nodeId)
+    {
+        $connection = \Yii::$app->db;
+        $connection->createCommand("DELETE FROM node_attr_group WHERE node_id=".$nodeId)->execute();
+    }
 
-    public static function assignUserGroups($nodeId,$groupsId)
+
+    /**
+     * @param $nodeId
+     * @param $groupsId
+     * @throws \yii\db\Exception
+     */
+    public static function assignUserGroups($nodeId, $groupsId)
     {
         $connection = \Yii::$app->db;
         $created_at=time();
@@ -67,7 +78,8 @@ class Nodes extends NodesBase
         try
         {
             $connection->createCommand("DELETE FROM user_group_node WHERE node_id=".$nodeId)->execute();
-            $connection->createCommand()->batchInsert('user_group_node',array('node_id','user_group_id','created_at'),$insert_array)->execute();
+            if(count($insert_array)>0)
+                $connection->createCommand()->batchInsert('user_group_node',array('node_id','user_group_id','created_at'),$insert_array)->execute();
             $transaction->commit();
         }
         catch(\Exception $e)
@@ -75,4 +87,32 @@ class Nodes extends NodesBase
             $transaction ->rollBack();
         }
     }
+
+    public static function getAssignedAttrGroup($nodeId)
+    {
+        return NodeAttrGroup::findOne(array('node_id'=>$nodeId));
+    }
+
+    /**
+     * @param $nodeId
+     * @return array
+     */
+    public static function getGroupsByNodeId($nodeId)
+    {
+        $groups_array=array();
+        if(is_numeric($nodeId))
+        {
+            $connection = \Yii::$app->db;
+            $command=$connection->createCommand("SELECT * FROM user_group_node WHERE node_id=".$nodeId);
+            $groups = $command->queryAll();
+            foreach($groups as $group)
+            {
+                $groups_array[]=$group['user_group_id'];
+            }
+        }
+
+        return $groups_array;
+    }
+
+
 }
