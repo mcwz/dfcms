@@ -184,14 +184,13 @@ if (!Yii::$app->user->isGuest) {
                             </li>
                             <li class="panel panel-default dropdown">
                                 <a data-toggle="collapse" href="#dropdown-form">
-                                    <span class="icon fa fa-file-text-o"></span><span class="title">Form</span>
+                                    <span class="icon fa fa-file-text-o"></span><span class="title"><?=Yii::t('app','MenuContentManage')?></span>
                                 </a>
                                 <!-- Dropdown level 1 -->
                                 <div id="dropdown-form" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
-                                            <li><a href="form/ui-kits.html">Form UI Kits</a>
-                                            </li>
+                                            <li><a href="<?=Url::to("/content/index")?>"><?=Yii::t('app', 'MenuContentManage')?></a>
                                         </ul>
                                     </div>
                                 </div>

@@ -76,6 +76,9 @@ class MyProfileController extends Controller
                     $model->newPassword = '';
                     $model->confirmPassword = '';
                     $model->email = $user->email;
+
+                    Yii::info( Yii::t('app/log', "Change profile(user id:{userId},username:{username})", ['userId' =>$model->id,'username'=>$model->username]), 'operations');
+
                     return $this->render('change-profile', [
                         'model' => $model,
                         'message' => Yii::t('app', 'Save success.')

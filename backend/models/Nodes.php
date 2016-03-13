@@ -88,9 +88,23 @@ class Nodes extends NodesBase
         }
     }
 
+    /**
+     * @param $nodeId
+     * @return null|static
+     */
     public static function getAssignedAttrGroup($nodeId)
     {
         return NodeAttrGroup::findOne(array('node_id'=>$nodeId));
+    }
+
+
+    public static function getAssignedAttrByNode($nodeId)
+    {
+        $assignedAttrGroup=self::getAssignedAttrGroup($nodeId);
+        if($assignedAttrGroup)
+            return NodeAttrGroup::getAttrModelByGroup($assignedAttrGroup->attr_group_id);
+        else
+            return null;
     }
 
     /**

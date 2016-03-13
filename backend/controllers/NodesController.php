@@ -17,8 +17,13 @@ use backend\models\forms\AssignNodesGroupForm;
 /**
  * NodesController implements the CRUD actions for Nodes model.
  */
-class NodesController extends Controller
+class NodesController extends BaseController
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("nodeModule");
+    }
     public function behaviors()
     {
         return [
@@ -93,6 +98,7 @@ class NodesController extends Controller
         }
         if($save_flag)
         {
+            Yii::info( Yii::t('app/log', "Create node(node name:{nodeName})", ['nodeName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         }
         else {
@@ -130,6 +136,7 @@ class NodesController extends Controller
         }
         if($update_flag)
         {
+            Yii::info( Yii::t('app/log', "Update node(node name:{nodeName})", ['nodeName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         }
         else {
@@ -156,6 +163,7 @@ class NodesController extends Controller
             $nodeId=$nodeModel->id;
             $groupId=$model->groupsId===null?array():$model->groupsId;
             Nodes::assignUserGroups($nodeId,$groupId);
+            Yii::info( Yii::t('app/log', "Assign Node(node name:{nodeName}) To Groups(Groups:{groups})", ['nodeName' =>$model->name,'groups'=>json_encode($groupId)]), 'operations');
             return $this->redirect(['assign-groups', 'id' => $nodeModel->id]);
         } else {
             return $this->render('assign-nodes', [
@@ -184,6 +192,7 @@ class NodesController extends Controller
             $model->created_at=time();
             $model->save();
             $node_attr_group=Nodes::getAssignedAttrGroup($id);
+            Yii::info( Yii::t('app/log', "Assign attrGroup(attrGroup name:{attrGroupName}) to node(node name:{nodeName})", ['attrGroupName' =>$model->name,'nodeName'=>$node->name]), 'operations');
         }
 
 
@@ -200,8 +209,9 @@ class NodesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model=$this->findModel($id);
+        Yii::info( Yii::t('app/log', "Delete node(node name:{nodeName},node id:{nodeId})", ['nodeName' =>$model->name,'nodeId'=>$model->id]), 'operations');
+        $model->delete();
         return $this->redirect(['index']);
     }
 

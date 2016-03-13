@@ -8,6 +8,11 @@ class TextAttr extends AttrBase implements AttrInterFace
 		parent::__construct($data);
 	}
 
+	public function active()
+	{
+		return \yii\helpers\Html::activeTextInput ( $model, $attribute, $options = [] );
+	}
+
 
 	public function getHtmlStr()
 	{

@@ -12,8 +12,13 @@ use yii\filters\VerbFilter;
 /**
  * AttrController implements the CRUD actions for Attrs model.
  */
-class AttrController extends Controller
+class AttrController extends BaseController
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("attrModule");
+    }
     public function behaviors()
     {
         return [
@@ -48,6 +53,7 @@ class AttrController extends Controller
      */
     public function actionView($id)
     {
+        Yii::info( Yii::t('app/log', "Check Attr(attr id:{id})", ['id' =>$id]), 'operations');
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -71,6 +77,7 @@ class AttrController extends Controller
         }
         if($create_flag)
         {
+            Yii::info( Yii::t('app/log', "Create new Attr:{attrName})", ['attrName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -95,6 +102,7 @@ class AttrController extends Controller
         }
         if($updated)
         {
+            Yii::info( Yii::t('app/log', "Update attr(attr name:{attrName})", ['attrName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -111,8 +119,9 @@ class AttrController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model=$this->findModel($id);
+        Yii::info( Yii::t('app/log', "Delete attr(attr name:{attrName})", ['attrName' =>$model->name]), 'operations');
+        $model->delete();
         return $this->redirect(['index']);
     }
 

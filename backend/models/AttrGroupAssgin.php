@@ -10,9 +10,9 @@ namespace backend\models;
 
 
 use backend\models\forms\AssignAttrGroupForm;
-use backend\models\giimodels\AttrGroupBase;
+use backend\models\giimodels\AttrGroupAssignBase;
 
-class AttrGroupAssgin extends AttrGroupBase
+class AttrGroupAssgin extends AttrGroupAssignBase
 {
     public static function getAttrGroupAssign($attrGroupId)
     {

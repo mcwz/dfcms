@@ -11,6 +11,12 @@ use yii\web\Controller;
  */
 class TestController extends Controller
 {
+    public function actionTestMysql()
+    {
+        $db=Yii::$app->db;
+        $result=$db->createCommand("SELECT attr FROM `content_attr` WHERE `content_id`='1'")->execute();
+        var_dump($result);
+    }
 
     public function actionEmail()
     {

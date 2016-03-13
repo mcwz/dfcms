@@ -30,6 +30,20 @@ class AttrFactory
         }
     }
 
+    public static function buildByArray($attrArray)
+    {
+        $return_array=array();
+        if(is_array($attrArray))
+        {
+            foreach($attrArray as $anAttrObj)
+            {
+                $return_array[]=self::build($anAttrObj,$anAttrObj['type']);
+            }
+        }
+
+        return $return_array;
+    }
+
     public static function getAttrType()
     {
         return [

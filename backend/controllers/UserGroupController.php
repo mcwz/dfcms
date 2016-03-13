@@ -103,6 +103,7 @@ class UserGroupController extends BaseController
 
         if($save_flag)
         {
+            Yii::info( Yii::t('app/log', "Create userGroup(userGroup name:{userGroupName})", ['userGroupName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         }
         else
@@ -132,6 +133,7 @@ class UserGroupController extends BaseController
         if ($model->load(Yii::$app->request->post())) {
 
             $model->save();
+            Yii::info( Yii::t('app/log', "Update userGroup(userGroup name:{userGroupName})", ['userGroupName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -151,7 +153,9 @@ class UserGroupController extends BaseController
     {
         if(!UserGroup::haveSon($id))
         {
-            $this->findModel($id)->delete();
+            $model=$this->findModel($id);
+            Yii::info( Yii::t('app/log', "Delete userGroup(userGroup name:{userGroupName})", ['userGroupName' =>$model->name]), 'operations');
+            $model->delete();
         }
         else
         {

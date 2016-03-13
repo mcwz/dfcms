@@ -17,13 +17,22 @@ class ZTreeDataTransfer
      * @param array $openIdArray
      * @return string
      */
-    public static function array2simpleJson($data, $keys=array('id','pid','name'), $openIdArray=array())
+    public static function array2simpleJson($data, $keys=array('id','pid','name'), $openIdArray=array(),$addOnData=array())
     {
         $result_array=array();
 
         if(!is_array($openIdArray))
         {
             $openIdArray=array($openIdArray);
+        }
+
+        if(isset($addOnData['URL_PRE']))
+        {
+            $url_pre=$addOnData['URL_PRE'];
+        }
+        else
+        {
+            $url_pre="view?id=";
         }
 
         if(is_array($data) && count($keys)===3)
@@ -45,7 +54,7 @@ class ZTreeDataTransfer
                     $result_array[$i]['id']=$aNode[$keys[0]];
                     $result_array[$i]['pid']=$aNode[$keys[1]];
                     $result_array[$i]['name']=$aNode[$keys[2]];
-                    $result_array[$i]['url']='view?id='.$aNode[$keys[0]];
+                    $result_array[$i]['url']=$url_pre.$aNode[$keys[0]];
                     $result_array[$i]['target']='_self';
 
                     if(in_array($aNode[$keys[0]],$openIdArray))

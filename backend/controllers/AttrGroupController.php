@@ -16,8 +16,13 @@ use yii\filters\VerbFilter;
 /**
  * AttrGroupController implements the CRUD actions for AttrGroup model.
  */
-class AttrGroupController extends Controller
+class AttrGroupController extends BaseController
 {
+    public function init()
+    {
+        parent::init();
+        $this->checkRBAC("attrModule");
+    }
     public function behaviors()
     {
         return [
@@ -76,6 +81,7 @@ class AttrGroupController extends Controller
         }
 
         if($create_flag){
+            Yii::info( Yii::t('app/log', "Create new attrGroup(attrGroup name:{attrGroupName})", ['attrGroupName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -100,6 +106,7 @@ class AttrGroupController extends Controller
             $update_flag=$model->save();
         }
         if($update_flag){
+            Yii::info( Yii::t('app/log', "Update attrGroup(attrGroup name:{attrGroupName})", ['attrGroupName' =>$model->name]), 'operations');
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -116,15 +123,14 @@ class AttrGroupController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model=$this->findModel($id);
+        Yii::info( Yii::t('app/log', "Delete attrGroup(attrGroup name:{attrGroupName})", ['attrGroupName' =>$model->name]), 'operations');
+        $model->delete();
         return $this->redirect(['index']);
     }
 
     public function actionChooseAttr($id)
     {
-//        $attr=AttrFactory::build(array("name"=>'namex','type'=>AttrFactory::TYPE_TEXT,'label'=>'名称'),AttrFactory::TYPE_TEXT);
-//        echo $attr->getHtmlStr();
         $attrGroup=$this->findModel($id);
         $all_attr=Attrs::getAllAttr();
         $now_assign=AttrGroupAssgin::getAttrGroupAssign($id);
@@ -137,6 +143,7 @@ class AttrGroupController extends Controller
             AttrGroupAssgin::assign($model);
             $now_assign=AttrGroupAssgin::getAttrGroupAssign($id);
             $now_assign_attrIds=AttrGroupAssgin::processAssign($now_assign);
+            Yii::info( Yii::t('app/log', "Assign These attr(attr id:{attrId}) To Group(GroupName:{GroupName})", ['attrId'=>json_encode($now_assign_attrIds) ,'GroupName'=>$attrGroup->name]), 'operations');
         }
 
         $array_render_data=array('attrGroup'=>$attrGroup,
