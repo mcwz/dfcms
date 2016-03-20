@@ -3,7 +3,8 @@ $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
     require(__DIR__ . '/params.php'),
-    require(__DIR__ . '/params-local.php')
+    require(__DIR__ . '/params-local.php'),
+    require(__DIR__ . '/../template/TConfig.php')
 );
 
 return [
@@ -11,6 +12,14 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+//    'catchAll'=>['site/test'],
+//    'as urlFilter' => [
+//        'class' => 'frontend\service\ActionUrlFilter',
+//    ],
+//    'on beforeRequest' => function ($event) {
+//        echo "<pre>";
+//        print_r($event);exit();
+//    },
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
@@ -25,9 +34,17 @@ return [
                 ],
             ],
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+                'rules' => [
+                        '/<url:.*>' => 'site/all-page',
+                ],
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
     ],
+
     'params' => $params,
 ];
