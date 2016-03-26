@@ -48,7 +48,7 @@ class UrlBase extends \yii\db\ActiveRecord
             'relate_id' => Yii::t('app', 'Relate ID'),
             'url' => Yii::t('app', 'Url'),
             'url_hash' => Yii::t('app', 'Url Hash'),
-            'url_type' => Yii::t('app', '1,article;2,index;3,cover'),
+            'url_type' => Yii::t('app', 'Url Type'),
             'created_at' => Yii::t('app', 'Created At'),
         ];
     }

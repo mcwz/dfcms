@@ -14,7 +14,7 @@ use Yii;
  * @property string $pos
  * @property integer $type
  * @property string $attr_group_id
- * @property string $flow_group_id
+ * @property string $check_group_id
  * @property string $path
  * @property string $article_t_path
  * @property string $index_t_path
@@ -40,7 +40,7 @@ class NodesBase extends \yii\db\ActiveRecord
     {
         return [
             [['pid', 'name', 'description', 'path', 'status', 'created_at', 'updated_at'], 'required'],
-            [['pid', 'pos', 'type', 'attr_group_id', 'flow_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['pid', 'pos', 'type', 'attr_group_id', 'check_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'path'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 250],
             [['article_t_path', 'index_t_path', 'cover_t_path'], 'string', 'max' => 255]
@@ -60,7 +60,7 @@ class NodesBase extends \yii\db\ActiveRecord
             'pos' => Yii::t('app', 'Pos'),
             'type' => Yii::t('app', 'Type'),
             'attr_group_id' => Yii::t('app', 'Attr Group ID'),
-            'flow_group_id' => Yii::t('app', 'Flow Group ID'),
+            'check_group_id' => Yii::t('app', 'Check Group ID'),
             'path' => Yii::t('app', 'Path'),
             'article_t_path' => Yii::t('app', 'Article T Path'),
             'index_t_path' => Yii::t('app', 'Index T Path'),

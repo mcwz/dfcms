@@ -18,6 +18,7 @@ use backend\libtool\ModelError;
     <?=ModelError::generateErrors($model->getErrors()); ?>
     <?=ModelError::generateErrors($contentAttrModel->getErrors()); ?>
     <?=ModelError::generateErrors($activeAttrModel->getErrors()); ?>
+    <?=ModelError::generateErrors($urlModel->getErrors()); ?>
     <?php $form = ActiveForm::begin(); ?>
 
 
@@ -78,6 +79,8 @@ use backend\libtool\ModelError;
                     ]
                 ])
                 ?>
+
+                <?= $form->field($urlModel, 'url')->textInput(['maxlength' => true,'readonly'=>true]) ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="attr">
                 <?php

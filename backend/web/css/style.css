@@ -1252,3 +1252,6 @@ div.required label:after {
 
 .tree_left
 {position: fixed;height: 100%;overflow: auto}
+.one_check_user{margin: auto 15px;}
+.col_title150{width: 150px;}
+.col_title200{width: 200px;}

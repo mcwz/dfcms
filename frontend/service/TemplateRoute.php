@@ -8,6 +8,7 @@
 
 namespace frontend\service;
 
+use backend\libtool\TreeToSortArray;
 use backend\models\Content;
 use backend\models\Nodes;
 use backend\models\Url;
@@ -17,9 +18,7 @@ use yii\web\NotFoundHttpException;
 
 class TemplateRoute
 {
-    const URL_TYPE_ARTICLE=1;//普通文章用这个
-    const URL_TYPE_INDEX=2;//列表页用这个，默认可以被下级节点继承
-    const URL_TYPE_COVER=3;//首页用这个，不能被下级节点继承
+
 
     private $host='localhost';
     private $url='/';
@@ -109,9 +108,9 @@ class TemplateRoute
     {
         switch($urlObj->url_type)
         {
-            case self::URL_TYPE_ARTICLE:return $this->_getArticleTemplatePath($urlObj);break;
-            case self::URL_TYPE_COVER:return $this->_getCoverTemplatePath($urlObj);break;
-            case self::URL_TYPE_INDEX:return $this->_getIndexTemplatePath($urlObj);break;
+            case Url::URL_TYPE_ARTICLE:return $this->_getArticleTemplatePath($urlObj);break;
+            case Url::URL_TYPE_COVER:return $this->_getCoverTemplatePath($urlObj);break;
+            case Url::URL_TYPE_INDEX:return $this->_getIndexTemplatePath($urlObj);break;
             default:$this->error[]=Yii::t('app','Unknown url type code({code})',['code'=>$urlObj->url_type]);return '';
         }
     }
@@ -120,17 +119,17 @@ class TemplateRoute
     private function _getArticleTemplatePath($urlObj)
     {
         $nodes_data=$this->_getNodes($urlObj);
-        return $this->_findTPath($nodes_data,self::URL_TYPE_ARTICLE);
+        return $this->_findTPath($nodes_data,Url::URL_TYPE_ARTICLE);
     }
     private function _getIndexTemplatePath($urlObj)
     {
         $nodes_data=$this->_getNodes($urlObj);
-        return $this->_findTPath($nodes_data,self::URL_TYPE_INDEX);
+        return $this->_findTPath($nodes_data,Url::URL_TYPE_INDEX);
     }
     private function _getCoverTemplatePath($urlObj)
     {
         $nodes_data=$this->_getNodes($urlObj);
-        return $this->_findTPath($nodes_data,self::URL_TYPE_COVER);
+        return $this->_findTPath($nodes_data,Url::URL_TYPE_COVER);
     }
     private function _getTemplatePath($urlObj)
     {
@@ -139,74 +138,48 @@ class TemplateRoute
     }
 
 
-
     private function _findTPath($nodes_data,$foundType=0)
     {
         $return=array();
         if($nodes_data)
         {
             $allNodeTemp=$nodes_data['allNodes'];
-            $notFounded=true;
             $foundingNodeId=$nodes_data['nowNode']->id;
-            $i=0;
-//            echo "<pre>";
-            while($notFounded)
+            $sortedTree=TreeToSortArray::parseASC($allNodeTemp,$foundingNodeId);
+            foreach($sortedTree as $aLeaf)
             {
-//                echo "<pre>$foundingNodeId and now all nodes is:<br>";
-//                print_r($allNodeTemp);
-                $nodeDepth=count($allNodeTemp);
-                if($nodeDepth<=0)
+                //找文章模板位置
+                if($foundType===Url::URL_TYPE_ARTICLE || $foundType===0)
                 {
-//                    echo "breaking";
-//                    print_r($allNodeTemp);
-                    break;
-                }
-                if($i>=$nodeDepth) $i=0;
-
-                if(count($allNodeTemp)==0)exit();
-//                echo "<br/>checking $foundingNodeId-<br/>";
-//                print_r($allNodeTemp[$i]);
-                if($foundingNodeId==$allNodeTemp[$i]['id'])
-                {
-                    //找文章模板位置
-                    if($foundType===self::URL_TYPE_ARTICLE || $foundType===0)
+                    if($aLeaf['article_t_path']!='')
                     {
-                        if($allNodeTemp[$i]['article_t_path']!='')
-                        {
-                            $return['article_t_path']=$allNodeTemp[$i]['article_t_path'];
-                            if($foundType>0){$notFounded=false;break;}
-                        }
+                        $return['article_t_path']=$aLeaf['article_t_path'];
+                        if($foundType>0){break;}
                     }
-
-                    //找封面页模板位置
-                    if($foundType===self::URL_TYPE_COVER  || $foundType===0)
-                    {
-                        if($allNodeTemp[$i]['cover_t_path']!='')
-                        {
-                            $return['cover_t_path']=$allNodeTemp[$i]['cover_t_path'];
-                            if($foundType>0){$notFounded=false;break;}
-                        }
-                    }
-
-                    //找列表页模板位置
-                    if($foundType===self::URL_TYPE_INDEX  || $foundType===0)
-                    {
-                        if($allNodeTemp[$i]['index_t_path']!='')
-                        {
-                            $return['index_t_path']=$allNodeTemp[$i]['index_t_path'];
-                            if($foundType>0){$notFounded=false;break;}
-                        }
-                    }
-                    $foundingNodeId=$allNodeTemp[$i]['pid'];
-                    array_splice($allNodeTemp,$i,1);
                 }
 
+                //找封面页模板位置
+                if($foundType===Url::URL_TYPE_COVER  || $foundType===0)
+                {
+                    if($aLeaf['cover_t_path']!='')
+                    {
+                        $return['cover_t_path']=$aLeaf['cover_t_path'];
+                        if($foundType>0){break;}
+                    }
+                }
 
-                $i++;
+                //找列表页模板位置
+                if($foundType===Url::URL_TYPE_INDEX  || $foundType===0)
+                {
+                    if($aLeaf['index_t_path']!='')
+                    {
+                        $return['index_t_path']=$aLeaf['index_t_path'];
+                        if($foundType>0){break;}
+                    }
+                }
             }
         }
-
-        return $return;
+        return $return ;
     }
 
 
@@ -214,7 +187,7 @@ class TemplateRoute
     {
         switch($urlObj->url_type)
         {
-            case self::URL_TYPE_ARTICLE:
+            case Url::URL_TYPE_ARTICLE:
                 $content=Content::findOne(['id'=>$urlObj->relate_id]);
                 if($content)
                 {
@@ -225,8 +198,8 @@ class TemplateRoute
                     $this->error[]=Yii::t('app','Url Is not Match an article');
                 }
                 break;
-            case self::URL_TYPE_COVER:
-            case self::URL_TYPE_INDEX:
+            case Url::URL_TYPE_COVER:
+            case Url::URL_TYPE_INDEX:
                 $node=Nodes::findOne(['id'=>$urlObj->relate_id]);
                 if($node)
                 {

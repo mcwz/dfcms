@@ -24,7 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'contentAttrModel'=>$contentAttrModel,
         'attr_array'=>$attr_array,
-        'activeAttrModel'=>$activeAttrModel
+        'activeAttrModel'=>$activeAttrModel,
+        'urlModel'=>$urlModel
     ]) ?>
 
         </div>

@@ -6,4 +6,5 @@
  * Time: 11:01
  */
 
-echo $p1;
+echo 'title:'.$content->title.'<br/>';
+echo 'content:'.$content_attr->content.'<br/>';

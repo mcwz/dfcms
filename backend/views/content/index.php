@@ -31,19 +31,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'title',
-            'description',
-            'editor_id',
             'editor_name',
             // 'node_id',
-            // 'created_at',
+            [
+                'attribute' => 'created_at',
+                'format' => ['date', 'php:Y-m-d H:i:s'],
+            ],
             // 'updated_at',
-            // 'status',
+             'status',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app', 'Operate'),'template' => '{checking/check} {view} {update} {delete}',
+                'buttons' => [
+                    'checking/check' => function ($url, $model, $key) {
+                        return  Html::a('<span class="glyphicon glyphicon-check"></span>', \yii\helpers\Url::to('/checking/check?type=beforeSendCheck&cid='.$model->id) , ['title' => Yii::t('app', 'Send To Check')] ) ;
+                    },
+                ],
+            ],
         ],
     ]); ?>
 

@@ -4,7 +4,9 @@ namespace backend\controllers;
 
 use backend\models\ContentAttr;
 use backend\libtool\ObjectArrayParse;
+use backend\models\Url;
 use backend\services\activeAttr\ActiveAttrFactory;
+use backend\services\url\UrlGenerator;
 use Yii;
 use backend\models\Content;
 use backend\models\search\ContentSearch;
@@ -112,12 +114,17 @@ class ContentController extends BaseController
 
         $model = new Content();
         $contentAttrModel=new ContentAttr();
+        $urlModel=new Url();
         $activeAttrModel=ActiveAttrFactory::build($attr_array);
         $create_flag=false;
 
+        $path=UrlGenerator::initByNodeId($nodeid);
+
+
         if ($model->load(Yii::$app->request->post()) &&
             $activeAttrModel->load(Yii::$app->request->post()) &&
-            $contentAttrModel->load(Yii::$app->request->post())
+            $contentAttrModel->load(Yii::$app->request->post()) &&
+            $urlModel->load(Yii::$app->request->post())
         ) {
 
             if($activeAttrModel->validate())
@@ -142,14 +149,25 @@ class ContentController extends BaseController
             $model->editor_name=Yii::$app->user->identity->username;
             $model->editor_id= Yii::$app->user->id;
             $model->node_id=$nodeid;
-            $model->status=Content::STATUS_PUB;
+            $model->status=Content::STATUS_EDITING;
             $create_flag = $model->save();
             if($create_flag)
             {
                 $contentAttrModel->content_id=$model->id;
                 $create_flag=$contentAttrModel->save();
+
+                $urlModel->url=str_replace('{{id}}',$model->id,$urlModel->url);
+                $urlModel->relate_id=$model->id;
+                $urlModel->url_type=Url::URL_TYPE_ARTICLE;
+                $urlModel->url_hash=md5($urlModel->url);
+                $urlModel->created_at=time();
+                $urlModel->save();
             }
 
+        }
+        else
+        {
+            $urlModel->url=$path.'/{{id}}';
         }
 
         $array_data=array(
@@ -158,7 +176,9 @@ class ContentController extends BaseController
             'attr_array'=>$attr_array,
             'allNodes'=>$allNodesJson,
             'contentAttrModel'=>$contentAttrModel,
-            'activeAttrModel'=>$activeAttrModel);
+            'activeAttrModel'=>$activeAttrModel,
+            'urlModel'=>$urlModel
+        );
 
         if($create_flag){
             Yii::info( Yii::t('app/log', "Create content(content title:{contentTitle},content id:{contentId})", ['contentTitle' =>$model->title,'contentId'=>$model->id]), 'operations');

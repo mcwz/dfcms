@@ -178,6 +178,7 @@ if (!Yii::$app->user->isGuest) {
                                         <ul class="nav navbar-nav">
                                             <li><a href="<?=Url::to("/nodes/index")?>"><?=Yii::t('app', 'MenuNodeManage')?></a>
                                             <li><a href="<?=Url::to("/attr-group/index")?>"><?=Yii::t('app', 'MenuAttrGroupManage')?></a>
+                                            <li><a href="<?=Url::to("/check-group/index")?>"><?=Yii::t('app', 'MenuCheckGroup')?></a>
                                         </ul>
                                     </div>
                                 </div>
@@ -191,6 +192,7 @@ if (!Yii::$app->user->isGuest) {
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
                                             <li><a href="<?=Url::to("/content/index")?>"><?=Yii::t('app', 'MenuContentManage')?></a>
+
                                         </ul>
                                     </div>
                                 </div>
