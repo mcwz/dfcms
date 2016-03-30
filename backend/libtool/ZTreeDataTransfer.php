@@ -57,7 +57,7 @@ class ZTreeDataTransfer
                     $result_array[$i]['url']=$url_pre.$aNode[$keys[0]];
                     $result_array[$i]['target']='_self';
 
-                    if(in_array($aNode[$keys[0]],$openIdArray))
+                    if(in_array($aNode[$keys[0]],$openIdArray) || $result_array[$i]['id']==1)
                     {
                         $result_array[$i]['open']=true;
                     }

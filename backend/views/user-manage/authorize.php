@@ -13,7 +13,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-manage-view">
 
-    <h3><?= Html::encode($this->title) ?></h3>
+    <div class="page-title">
+        <span class="title"><?= Html::encode($this->title) ?></span>
+    </div>
 
     <?php $form = ActiveForm::begin(); ?>
 

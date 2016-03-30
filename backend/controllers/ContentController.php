@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Category;
 use backend\models\ContentAttr;
 use backend\libtool\ObjectArrayParse;
 use backend\models\Url;
@@ -57,8 +58,9 @@ class ContentController extends BaseController
         }
 
 
-        $allNodes=Nodes::getAllNodesData();
-        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?id='));
+        //$allNodes=Nodes::getAllNodesData();
+        //=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?id='));
+        $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
 
         $searchModel = new ContentSearch();
         $dataProvider = $searchModel->search($search_array);

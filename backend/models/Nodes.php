@@ -20,7 +20,7 @@ class Nodes extends NodesBase
     {
         return [
             [['pid', 'name',  'path', 'status', 'created_at', 'updated_at'], 'required'],
-            [['pid', 'pos', 'type', 'attr_group_id', 'flow_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['pid', 'pos', 'type', 'attr_group_id', 'check_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'path'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 250],
             ['type', 'in', 'range' => [self::TYPE_SITE, self::TYPE_NODE]]
@@ -50,6 +50,16 @@ class Nodes extends NodesBase
             self::TYPE_NODE => Yii::t('app', 'TYPE_NODE'),
             self::TYPE_SITE => Yii::t('app', 'TYPE_SITE'),
         ];
+    }
+
+    public static function generateType($type)
+    {
+        switch($type)
+        {
+            case self::TYPE_NODE : return Yii::t('app', 'TYPE_NODE');break;
+            case self::TYPE_SITE : return Yii::t('app', 'TYPE_SITE');break;
+            default:return'';
+        }
     }
 
     public static function deleteOldAttrGroupAssign($nodeId)
@@ -149,5 +159,19 @@ class Nodes extends NodesBase
         }
         else
             return null;
+    }
+
+    public static function checkHaveSon($id)
+    {
+        if(is_numeric($id))
+        {
+            $sql="SELECT COUNT(*) as son_count FROM nodes WHERE pid=".$id;
+            $sonCount=Yii::$app->db->createCommand($sql)->queryOne();
+            if($sonCount)
+            {
+                return $sonCount['son_count'];
+            }
+        }
+        return 0;
     }
 }

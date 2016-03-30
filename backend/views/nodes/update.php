@@ -18,7 +18,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
             <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$model->id]) ?>
         </div>
         <div class="col-md-9 col-md-offset-3">
-    <h3><?= Html::encode($this->title) ?></h3>
+            <div class="page-title">
+                <span class="title"><?= Html::encode($this->title) ?></span>
+            </div>
 
     <?= $this->render('_form', [
         'model' => $model,

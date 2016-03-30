@@ -18,4 +18,17 @@ class AttrGroup extends AttrGroupBase
         $connection = \Yii::$app->db;
         return $connection->createCommand('SELECT * FROM attr_group order by id')->queryAll();
     }
+
+    public static function getAttrGroupNameById($id)
+    {
+        if(is_numeric($id))
+        {
+            $attrGroup=AttrGroup::findOne($id);
+            if($attrGroup)
+            {
+                return $attrGroup->name;
+            }
+        }
+        return \Yii::t('app','No One');
+    }
 }

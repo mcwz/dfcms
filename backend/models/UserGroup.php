@@ -115,4 +115,14 @@ class UserGroup extends UserGroupBase
         $model->status=1;
         return $model;
     }
+
+    public static function getUserGroupsByUserId($userId)
+    {
+        if(is_numeric($userId))
+        {
+            $sql="SELECT * FROM user_group_assign where user_id=".$userId;
+            return Yii::$app->db->createCommand($sql)->queryAll();
+        }
+        return null;
+    }
 }

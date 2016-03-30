@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'User Groups'), 'url'
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-group-view">
-    <div class="row">
-        <h3><?= Html::encode($this->title) ?></h3>
+    <div class="page-title">
+        <span class="title"><?= Html::encode($this->title) ?></span>
     </div>
     <div class="row">
         <div class="col-md-3 tree_left">

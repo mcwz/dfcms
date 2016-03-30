@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use backend\widgets\ZTreeWidget;
+use backend\libtool\ModelError;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Nodes */
 
@@ -16,12 +17,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$model->id]) ?>
         </div>
         <div class="col-md-9 col-md-offset-3">
-    <h3><?= Html::encode($this->title) ?></h3>
-
+            <div class="page-title">
+                <span class="title"><?= Html::encode($this->title) ?></span>
+            </div>
+            <?=ModelError::generateErrors(\backend\services\error\FlashError::getFlashError()); ?>
     <p>
         <?= Html::a(Yii::t('app', 'Create Nodes'), ['create','pid'=>$model->id], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id,'deletefrom'=>'view'], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
@@ -40,9 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'description',
             'pos',
-            'type',
-            'attr_group_id',
-            'flow_group_id',
+            ['attribute'=>'type','value'=> \backend\models\Nodes::generateType($model->type)],
+            ['attribute'=>'attr_group_id','value'=>\backend\models\AttrGroup::getAttrGroupNameById($model->attr_group_id),],
+            ['attribute'=>'check_group_id','value'=>\backend\models\CheckGroup::getCheckGroupNameById($model->check_group_id)],
             'path',
             'status',
             [

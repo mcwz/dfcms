@@ -18,7 +18,7 @@ class NodesSearch extends Nodes
     public function rules()
     {
         return [
-            [['id', 'pid', 'pos', 'type', 'attr_group_id', 'flow_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'pid', 'pos', 'type', 'attr_group_id', 'check_group_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'description', 'path'], 'safe'],
         ];
     }
@@ -61,7 +61,7 @@ class NodesSearch extends Nodes
             'pos' => $this->pos,
             'type' => $this->type,
             'attr_group_id' => $this->attr_group_id,
-            'flow_group_id' => $this->flow_group_id,
+            'check_group_id' => $this->check_group_id,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

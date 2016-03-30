@@ -98,6 +98,9 @@ return [
                 ],
             ],
         ],
+        'cache' => [
+            'class' => 'yii\caching\DbCache',
+        ],
     ],
     'language'=>'zh-CN',
     'params' => $params,

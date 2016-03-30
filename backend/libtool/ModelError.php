@@ -18,10 +18,18 @@ class ModelError
             $htmlStr='<div class="row"><div class="bg-danger"><ul>';
             foreach($errors as $attr=>$error_arr)
             {
-                foreach($error_arr as $oneError)
+                if(is_array($error_arr))
                 {
-                    $htmlStr.='<li>'.$attr.':'.$oneError.'</li>';
+                    foreach($error_arr as $oneError)
+                    {
+                        $htmlStr.='<li>'.$attr.':'.$oneError.'</li>';
+                    }
                 }
+                else
+                {
+                    $htmlStr.='<li>'.$error_arr.'</li>';
+                }
+
             }
             $htmlStr.='</ul></div></div>';
             return $htmlStr;

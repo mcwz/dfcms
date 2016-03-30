@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\AttrGroup;
 use backend\models\NodeAttrGroup;
 use backend\models\UserGroup;
+use backend\services\error\FlashError;
 use Yii;
 use backend\models\Nodes;
 use backend\models\search\NodesSearch;
@@ -192,7 +193,7 @@ class NodesController extends BaseController
             $model->created_at=time();
             $model->save();
             $node_attr_group=Nodes::getAssignedAttrGroup($id);
-            Yii::info( Yii::t('app/log', "Assign attrGroup(attrGroup name:{attrGroupName}) to node(node name:{nodeName})", ['attrGroupName' =>$model->name,'nodeName'=>$node->name]), 'operations');
+            Yii::info( Yii::t('app/log', "Assign attrGroup(attrGroup id:{attr_group_id}) to node(node name:{nodeName})", ['attrGroupName' =>$model->attr_group_id,'nodeName'=>$node->name]), 'operations');
         }
 
 
@@ -205,14 +206,30 @@ class NodesController extends BaseController
      * Deletes an existing Nodes model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
+     * @param string $deletefrom
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Exception
      */
-    public function actionDelete($id)
+    public function actionDelete($id,$deletefrom='index')
     {
         $model=$this->findModel($id);
-        Yii::info( Yii::t('app/log', "Delete node(node name:{nodeName},node id:{nodeId})", ['nodeName' =>$model->name,'nodeId'=>$model->id]), 'operations');
-        $model->delete();
-        return $this->redirect(['index']);
+        if(Nodes::checkHaveSon($id)>0)
+        {
+            FlashError::setFlashError(Yii::t('app',"You can't delete this node because it has one or more son." ));
+        }
+        else
+        {
+            Yii::info( Yii::t('app/log', "Delete node(node name:{nodeName},node id:{nodeId})", ['nodeName' =>$model->name,'nodeId'=>$model->id]), 'operations');
+            $model->delete();
+        }
+        if(!in_array($deletefrom,array('index','view')))
+            $deletefrom='index';
+        if($deletefrom=='view')
+        {
+            $deletefrom='view?id='.$id;
+        }
+        return $this->redirect([$deletefrom]);
     }
 
     /**

@@ -36,7 +36,11 @@
         zTree_<?=$treeName?>.setting.check.chkboxType = { "Y" : "", "N" : "" };
         <?php
         if(isset($selectID) && $selectID!==null)
+        {
             echo "zTree_$treeName.selectNode(zTree_$treeName.getNodeByParam(\"id\", ".$selectID."));";
+            echo "zTree_$treeName.expandNode(zTree_$treeName.getNodeByParam(\"id\", ".$selectID."), true, false)";
+        }
+
 
         if($expandAll)
             echo "zTree_$treeName.expandAll(true);";

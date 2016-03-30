@@ -33,4 +33,17 @@ class CheckGroup extends CheckGroupBase
     {
         Yii::$app->db->createCommand("UPDATE `check_group` SET `step_count`=(SELECT count(*) FROM check_step WHERE group_id=".$gid.") WHERE id=".$gid)->execute();
     }
+
+    public static function getCheckGroupNameById($id)
+    {
+        if(is_numeric($id))
+        {
+            $checkGroup=CheckGroup::findOne($id);
+            if($checkGroup)
+            {
+                return $checkGroup->name;
+            }
+        }
+        return Yii::t('app','No One');
+    }
 }
