@@ -18,13 +18,14 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="row">
         <div class="col-md-3 tree_left">
-            <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$node==null?0:$node->id]) ?>
+            <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$node==null?1:$node->id]) ?>
         </div>
         <div class="col-md-9 col-md-offset-3">
+            <?=\backend\libtool\ModelError::generateErrors(\backend\services\error\FlashError::getFlashError())?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Content'), ['create','nodeid'=>$node==null?0:$node->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Content'), ['create','nodeid'=>$node==null?1:$node->id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

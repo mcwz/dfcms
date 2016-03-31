@@ -29,7 +29,8 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         'model' => $model,
         'contentAttrModel'=>$contentAttrModel,
         'attr_array'=>$attr_array,
-        'activeAttrModel'=>$activeAttrModel
+        'activeAttrModel'=>$activeAttrModel,
+        'urlModel'=>$urlModel,
     ]) ?>
 
         </div>

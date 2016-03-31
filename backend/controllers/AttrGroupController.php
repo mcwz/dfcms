@@ -4,12 +4,10 @@ namespace backend\controllers;
 
 use backend\models\AttrGroupAssgin;
 use backend\models\Attrs;
-use backend\services\attr\AttrFactory;
 use backend\models\forms\AssignAttrGroupForm;
 use Yii;
 use backend\models\AttrGroup;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 

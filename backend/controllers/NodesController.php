@@ -23,7 +23,7 @@ class NodesController extends BaseController
     public function init()
     {
         parent::init();
-        $this->checkRBAC("nodeModule");
+        $this->checkRBAC("noRight");
     }
     public function behaviors()
     {

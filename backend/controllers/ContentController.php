@@ -7,15 +7,13 @@ use backend\models\ContentAttr;
 use backend\libtool\ObjectArrayParse;
 use backend\models\Url;
 use backend\services\activeAttr\ActiveAttrFactory;
+use backend\services\error\FlashError;
 use backend\services\url\UrlGenerator;
 use Yii;
 use backend\models\Content;
 use backend\models\search\ContentSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\models\Nodes;
-use backend\libtool\ZTreeDataTransfer;
 
 /**
  * ContentController implements the CRUD actions for Content model.
@@ -43,16 +41,14 @@ class ContentController extends BaseController
      * Lists all Content models.
      * @return mixed
      */
-    public function actionIndex($id=0)
+    public function actionIndex($nodeid=1)
     {
         $node=null;
         $search_array=Yii::$app->request->queryParams;
+
         try{
-            $node=Nodes::findOne($id);
-            if(isset($search_array['ContentSearch']))
-            {
-                $search_array['ContentSearch']['node_id']=$node->id;
-            }
+            $node=Category::findOne($nodeid);
+            $search_array['ContentSearch']['node_id']=$node->id;
         }catch(\Exception $e){
             exit();
         }
@@ -81,9 +77,10 @@ class ContentController extends BaseController
     public function actionView($id)
     {
         $model=$this->findModel($id);
-        $allNodes=Nodes::getAllNodesData();
-        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?nodeid='));
-        $node=Nodes::findOne(["id"=>$model->node_id]);
+//        $allNodes=Nodes::getAllNodesData();
+//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?nodeid='));
+        $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
+        $node=Category::findOne(["id"=>$model->node_id]);
 
         Yii::info( Yii::t('app/log', "View Content(Content title:{contentTitle})", ['contentTitle' =>$model->title]), 'operations');
 
@@ -99,19 +96,18 @@ class ContentController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($nodeid=0)
+    public function actionCreate($nodeid=1)
     {
-        $node=null;
-        try{
-            $node=Nodes::findOne($nodeid);
-        }catch(\Exception $e){
-            exit();
+        $node=Category::findOne($nodeid);
+        if($node==null)
+        {
+            FlashError::setFlashError(Yii::t('app','Can not found category by id:{id}',['id'=>$nodeid]));
+            return $this->redirect(['index']);
         }
-
-
-        $allNodes=Nodes::getAllNodesData();
-        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
-        $attr_array=Nodes::getAssignedAttrByNode($nodeid);
+//        $allNodes=Nodes::getAllNodesData();
+//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
+        $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
+        $attr_array=Category::getAssignedAttrByCategory($nodeid);
 
 
         $model = new Content();
@@ -200,15 +196,16 @@ class ContentController extends BaseController
     {
         $model = $this->findModel($id);
         $contentAttrModel=new ContentAttr();
-        $allNodes=Nodes::getAllNodesData();
-        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
-        $node=Nodes::findOne(["id"=>$model->node_id]);
+//        $allNodes=Nodes::getAllNodesData();
+//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
+        $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
+        $node=Category::findOne(["id"=>$model->node_id]);
         $addonAttrObj=ContentAttr::findOne(['content_id'=>$id]);
         $contentAttrModel->content=$addonAttrObj->content;
         $addonAttr=ObjectArrayParse::Object2Array((json_decode($addonAttrObj->attr)));
         $attr_array=$addonAttr['attr_data_model'];
         $activeAttrModel=ActiveAttrFactory::build($attr_array);
-
+        $urlModel=Url::findOne(['relate_id'=>$model->id,'url_type'=>Url::URL_TYPE_ARTICLE]);
 
 
         $update_flag=false;
@@ -255,7 +252,9 @@ class ContentController extends BaseController
             'contentAttrModel'=>$contentAttrModel,
             'node'=>$node,
             'attr_array'=>$attr_array,
-            'activeAttrModel'=>$activeAttrModel];
+            'activeAttrModel'=>$activeAttrModel,
+            'urlModel'=>$urlModel,
+        ];
 
 
         if($update_flag)

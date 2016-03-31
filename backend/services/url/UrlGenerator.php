@@ -10,51 +10,21 @@ namespace backend\services\url;
 
 
 use backend\libtool\TreeToSortArray;
-use backend\models\Nodes;
+use backend\models\Category;
 
 class UrlGenerator
 {
     public static function initByNodeId($nodeId)
     {
         $return='';
-        $allNodes=Nodes::getAllParentNodes($nodeId);
-        if($allNodes)
-        {
-            $sortedTree=TreeToSortArray::parseASC($allNodes,$nodeId);
-            foreach($sortedTree as $aLeaf)
-            {
-                if((int)$aLeaf['type']===Nodes::TYPE_SITE)
-                {
-                    break;
-                }
-                if(trim($aLeaf['path'])!='')
-                {
-                    $return='/'.$aLeaf['path'].$return;
-                }
-            }
-        }
+        $allNodes=Category::findAncestor($nodeId);
+        //To Do 此处应完善成循环读到父级节点，然后拼出路径
         return $return;
     }
 
     public static function initSimpleByNodeId($nodeId)
     {
-        $lastLeaf=array();
-        $allNodes=Nodes::getAllParentNodes($nodeId);
-        if($allNodes)
-        {
-            $sortedTree=TreeToSortArray::parseASC($allNodes,$nodeId);
-            foreach($sortedTree as $aLeaf)
-            {
-                if((int)$aLeaf['type']===Nodes::TYPE_SITE)
-                {
-                    break;
-                }
-                else
-                {
-                    $lastLeaf=$aLeaf;
-                }
-            }
-        }
-        return $lastLeaf['path'];
+        //读出第一级节点的path并返回
+        return "";
     }
 }

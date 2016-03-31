@@ -57,9 +57,25 @@ class Category extends CategoryBase
         }
     }
 
+    /**
+     * 找到所有父级节点
+     * @param $id
+     * @return array
+     */
     public static function findAncestor($id)
     {
         $sql="SELECT c.* FROM ".parent::tableName()." AS c JOIN ".CategoryTreepathsBase::tableName()." AS t ON c.id=t.ancestor WHERE t.descendant=$id";
+        return Yii::$app->db->createCommand($sql)->queryAll();
+    }
+
+    /**
+     * 找到当前节点的节点父子关系
+     * @param $id
+     * @return array
+     */
+    public static function findAncestorTree($id)
+    {
+        $sql="SELECT * FROM ".CategoryTreepathsBase::tableName()."  WHERE descendant=$id AND descendant<>ancestor order by path_length ASC";
         return Yii::$app->db->createCommand($sql)->queryAll();
     }
 
@@ -136,7 +152,7 @@ class Category extends CategoryBase
     }
 
 
-    public static function transferDataToZtree($categories,$trees)
+    public static function transferDataToZtree($categories,$trees,$params=array())
     {
         $relations=array();
 
@@ -152,7 +168,15 @@ class Category extends CategoryBase
             $treeData[$i]['id']=$category['id'];
             $treeData[$i]['pid']= isset($relations['descendant_'.$category['id']])?$relations['descendant_'.$category['id']]:$category['id'];
             $treeData[$i]['name']=$category['name'];
-            $treeData[$i]['url']='view?id='.$category['id'];
+            if(isset($params['url']))
+            {
+                $treeData[$i]['url']=$params['url'].$category['id'];
+            }
+            else
+            {
+                $treeData[$i]['url']='view?id='.$category['id'];
+            }
+
             $treeData[$i]['target']='_self';
             if($category['id']==1)
             {
@@ -173,13 +197,79 @@ class Category extends CategoryBase
         $connection->createCommand("DELETE FROM node_attr_group WHERE node_id=".$nodeId)->execute();
     }
 
-    /**
-     * @param $nodeId
-     * @return null|static
-     */
-    public static function getAssignedAttrGroup($nodeId)
+
+    public static function getAssignedAttrGroup($categoryId,$findParentAttrGroup=true)
+    {//处理循环读到父级，直到直到能继承的属性组
+
+        $thisCategoryAttrGroup=NodeAttrGroup::getAttrGroupByCategoryId($categoryId);
+
+        if($thisCategoryAttrGroup)
+        {
+            return $thisCategoryAttrGroup;
+        }
+        else
+        {
+            //$categoryAncestors = self::findAncestor($categoryId);
+            $categoryAncestorsTrees = self::findAncestorTree($categoryId);
+
+            $findingId = $categoryId;
+            //if ($categoryAncestors && $categoryAncestorsTrees) {
+            if ($categoryAncestorsTrees) {
+                    //$categoryAncestorsArray = array();
+                    $categoryAncestorsTreesArray = array();
+
+                    //处理成'c'.$id=>$category形式，便于处理
+//                    $categoryIds = array();
+//                    foreach ($categoryAncestors as $categoryAncestor) {
+//                        $categoryAncestorsArray['c' . $categoryAncestor['id']] = $categoryAncestor;
+//                        $categoryIds[] = $categoryAncestor;
+//                    }
+                    //处理成[d.$descendant=>$ancestor]形式
+                    $descendant = $categoryId;
+                    $categoryIds=array($categoryId);
+                    foreach ($categoryAncestorsTrees as $categoryAncestorsTree) {
+                        $categoryAncestorsTreesArray['d' . $descendant] = $categoryAncestorsTree['ancestor'];
+                        $descendant = $categoryAncestorsTree['ancestor'];
+                        $categoryIds[]= $categoryAncestorsTree['ancestor'];
+                    }
+
+//                echo '<pre>';var_dump($categoryAncestorsTreesArray);exit();
+
+                    $nodeAttrGroups = NodeAttrGroup::getCategoryAttrGroupByCategoryIds($categoryIds);
+                    if ($nodeAttrGroups) {
+
+                        $nodeAttrGroupArray = array();
+                        //读出属性组赋值给节点情况，并处理成[c.$categoryId=>$attrGroupId]
+                        foreach ($nodeAttrGroups as $nodeAttrGroup) {
+                            $nodeAttrGroupArray['c' . $nodeAttrGroup['node_id']] = $nodeAttrGroup;
+                        }
+
+                        //基本思路就是节点表（category）里找到所有的父级节点，处理成['c'.$id=>$category]形式，
+                        //然后再去category_treepaths把这些节点的父子关系读出来，处理成处理成[d.$descendant=>$ancestor]形式
+                        //最后循环所有的父级节点 循环形式
+
+                        for ($i = 0; $i < count($categoryIds); $i++) {
+                            if (isset($nodeAttrGroupArray['c' . $categoryIds[$i]])) {
+                                return $nodeAttrGroupArray['c' . $categoryIds[$i]];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        return null;
+
+    }
+
+
+    public static function getAssignedAttrByCategory($nodeId)
     {
-        return NodeAttrGroup::findOne(array('node_id'=>$nodeId));
+        $assignedAttrGroup=self::getAssignedAttrGroup($nodeId);
+
+        if($assignedAttrGroup)
+            return NodeAttrGroup::getAttrModelByGroup($assignedAttrGroup['attr_group_id']);
+        else
+            return null;
     }
 
 
@@ -218,7 +308,7 @@ class Category extends CategoryBase
                         SELECT * FROM ".CategoryTreepathsBase::tableName()." WHERE path_length=1 AND descendant in(".implode(',',$authNodesIdArray).")";
                         $trees=Yii::$app->db->createCommand($sqlT)->queryAll();
 
-                        $data=json_encode(self::transferDataToZtree($categories,$trees));
+                        $data=json_encode(self::transferDataToZtree($categories,$trees,['url'=>'index?nodeid=']));
 
                         // 将 $data 存放到缓存供下次使用
                         $cache->set($key, $data);

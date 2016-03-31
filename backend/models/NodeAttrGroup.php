@@ -26,4 +26,24 @@ class NodeAttrGroup extends NodeAttrGroupBase
         else
             return null;
     }
+
+    public static function getCategoryAttrGroupByCategoryIds($categoryIds)
+    {
+        if(is_array($categoryIds) && count($categoryIds)>0)
+        {
+            $sql="SELECT * FROM node_attr_group WHERE node_id in(".implode(',',$categoryIds).")";
+            return \Yii::$app->db->createCommand($sql)->queryAll();
+        }
+        return null;
+    }
+
+    public static function getAttrGroupByCategoryId($categoryId)
+    {
+        if(is_numeric($categoryId))
+        {
+            $sql="SELECT * FROM node_attr_group WHERE node_id =".$categoryId;
+            return \Yii::$app->db->createCommand($sql)->queryOne();
+        }
+        return null;
+    }
 }

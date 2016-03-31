@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="row">
         <div class="col-md-3 tree_left">
-            <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$node==null?0:$node->id]) ?>
+            <?= ZTreeWidget::widget(['treeData' => $allNodes,'selectID'=>$node==null?1:$node->id]) ?>
         </div>
         <div class="col-md-9 col-md-offset-3">
 
