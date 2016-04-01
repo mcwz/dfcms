@@ -13,11 +13,17 @@ use backend\models\giimodels\AttrsBase;
 
 class Attrs extends AttrsBase
 {
+    /**
+     * @return array
+     */
     public static function getAttrTypes()
     {
         return \backend\services\attr\AttrFactory::getAttrType();
     }
 
+    /**
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getAllAttr()
     {
         return Attrs::find()->orderBy('id') ->all();

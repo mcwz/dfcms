@@ -18,7 +18,9 @@ class CheckStep extends CheckStepBase
     const CHECK_STEP_TYPE_NON_UNION=2;
 
 
-
+    /**
+     * @return array
+     */
     public static function getCheckTypes()
     {
         return [
@@ -28,6 +30,10 @@ class CheckStep extends CheckStepBase
         ];
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     public static function getLabel($type)
     {
         switch($type)
@@ -38,6 +44,10 @@ class CheckStep extends CheckStepBase
     }
 
 
+    /**
+     * @param $gid
+     * @return array|null
+     */
     public static function getAssignSteps($gid)
     {
         $result=null;

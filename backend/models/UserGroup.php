@@ -28,53 +28,6 @@ class UserGroup extends UserGroupBase
     }
 
     /**
-     * @param $include_default, Generate please select info
-     * @param $new_update if update then don't select itself
-     * @return array
-     */
-//    public static function getAllGroup($include_default, $update_id=0)
-//    {
-//        $connection = \Yii::$app->db;
-//
-//        if($update_id<=0)
-//        {
-//            $include_self='';
-//        }
-//        else
-//        {
-//            $include_self=' AND id<>'.$update_id.' ';
-//        }
-//
-//        $sql_str='SELECT * FROM user_group WHERE status>0'.$include_self;
-//        $command = $connection->createCommand($sql_str);
-//        $allGroup = $command->queryAll();
-//
-//        $groupArr=array();
-//
-//        if($include_default)
-//        {
-//            $groupArr['0']=Yii::t('app','As root group');
-//        }
-//
-//        foreach($allGroup as $aGroup)
-//        {
-////            $pathDeep=substr_count($aGroup['path'],'/');
-////            $pathStr='';
-////            if($pathDeep>1)
-////            {
-////                $pathStr='|';
-////                for($i=1;$i<$pathDeep;$i++)
-////                {
-////                    $pathStr.='--';
-////                }
-////            }
-////            $groupArr[$aGroup['id']]=$pathStr.$aGroup['name'];
-//            $groupArr[$aGroup['id']]=$aGroup['name'];
-//        }
-//        return $groupArr;
-//    }
-
-    /**
      * @param $thisId
      * @return bool
      */
@@ -116,6 +69,10 @@ class UserGroup extends UserGroupBase
         return $model;
     }
 
+    /**
+     * @param $userId
+     * @return array|null
+     */
     public static function getUserGroupsByUserId($userId)
     {
         if(is_numeric($userId))

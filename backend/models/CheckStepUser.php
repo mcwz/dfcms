@@ -8,12 +8,17 @@
 
 namespace backend\models;
 
-
 use backend\models\giimodels\CheckStepUserBase;
 
 class CheckStepUser extends CheckStepUserBase
 {
-    public static function createSteps($checkStep,$users4Check)
+    /**
+     * @param $checkStep
+     * @param $users4Check
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public static function createSteps($checkStep, $users4Check)
     {
         $userIds=$users4Check->userIds;
         $insert_array=array();
@@ -26,6 +31,10 @@ class CheckStepUser extends CheckStepUserBase
     }
 
 
+    /**
+     * @param $contentId
+     * @return array|null
+     */
     public static function getCheckStepUsersByContentId($contentId)
     {
         if(is_numeric($contentId))
@@ -33,10 +42,12 @@ class CheckStepUser extends CheckStepUserBase
             $content=Content::findOne($contentId);
             if($content!==null)
             {
-                $node=Nodes::findOne($content->node_id);
+                $node = Category::findOne($content->node_id);
                 if($node!==null)
                 {
-                    $checkGroup=CheckGroup::findOne($node->check_group_id);
+                    //一直找，直到在本级或者上级找到checkGroup
+//                    $checkGroup=CheckGroup::findOne($node->check_group_id);
+                    $checkGroup = Category::getUntilCheckGroup($node);
                     if($checkGroup)
                     {
                         return \Yii::$app->db->createCommand("SELECT check_step_user.id as check_step_user_id,check_step_user.user_id,

@@ -46,4 +46,9 @@ class CheckGroup extends CheckGroupBase
         }
         return Yii::t('app','No One');
     }
+
+    public static function getAllCheckGroups()
+    {
+        return Yii::$app->db->createCommand('SELECT * FROM check_group')->queryAll();
+    }
 }

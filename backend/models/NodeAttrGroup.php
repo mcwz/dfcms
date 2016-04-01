@@ -13,6 +13,10 @@ use backend\models\giimodels\NodeAttrGroupBase;
 
 class NodeAttrGroup extends NodeAttrGroupBase
 {
+    /**
+     * @param $groupId
+     * @return array|null
+     */
     public static function getAttrModelByGroup($groupId)
     {
         $assgined=AttrGroupAssgin::findAll(['group_id'=>$groupId]);
@@ -27,6 +31,10 @@ class NodeAttrGroup extends NodeAttrGroupBase
             return null;
     }
 
+    /**
+     * @param $categoryIds
+     * @return array|null
+     */
     public static function getCategoryAttrGroupByCategoryIds($categoryIds)
     {
         if(is_array($categoryIds) && count($categoryIds)>0)
@@ -37,6 +45,10 @@ class NodeAttrGroup extends NodeAttrGroupBase
         return null;
     }
 
+    /**
+     * @param $categoryId
+     * @return array|bool|null
+     */
     public static function getAttrGroupByCategoryId($categoryId)
     {
         if(is_numeric($categoryId))

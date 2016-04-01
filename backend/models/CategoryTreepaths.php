@@ -14,7 +14,12 @@ use Yii;
 
 class CategoryTreepaths extends CategoryTreepathsBase
 {
-    public static function create($newId,$pid)
+    /**
+     * @param $newId
+     * @param $pid
+     * @throws \yii\db\Exception
+     */
+    public static function create($newId, $pid)
     {
         $sql="INSERT INTO ".parent::tableName()."(ancestor,descendant,path_length) SELECT t.ancestor,$newId,t.path_length+1 FROM ".parent::tableName()
         ." AS t WHERE t.descendant =$pid UNION SELECT $newId,$newId,0";

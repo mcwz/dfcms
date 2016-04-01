@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
-use backend\widgets\ZTreeWidget;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Content */
@@ -50,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </table>
 
         <p>
-            <?= Html::a(Yii::t('app', 'Send To Check'), ['', 'cid' => $content->id], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a(Yii::t('app', 'Send To Check'), ['', 'cid' => $content->id, 'categoryid' => $categoryId], ['class' => 'btn btn-primary']) ?>
         </p>
 
     </div>

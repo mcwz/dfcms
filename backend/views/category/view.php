@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
         <?= Html::a(Yii::t('app', 'Create Child'), ['create', 'pid' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Assign Attr Group'), ['assign-attr-group','id'=>$model->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Assign Check Group'), ['assign-check-group', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= DetailView::widget([

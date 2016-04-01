@@ -127,6 +127,12 @@ class AttrGroupController extends BaseController
         return $this->redirect(['index']);
     }
 
+    /**
+     * 给属性组增加属性
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionChooseAttr($id)
     {
         $attrGroup=$this->findModel($id);

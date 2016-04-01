@@ -13,6 +13,9 @@ use yii\filters\VerbFilter;
  */
 class AttrController extends BaseController
 {
+    /**
+     *初始化方法，顺便检查这个controller的权限
+     */
     public function init()
     {
         parent::init();
@@ -30,9 +33,9 @@ class AttrController extends BaseController
         ];
     }
 
+
     /**
-     * Lists all Attrs models.
-     * @return mixed
+     * @return string
      */
     public function actionIndex()
     {

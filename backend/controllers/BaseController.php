@@ -10,6 +10,11 @@ use yii\web\Controller;
  */
 class BaseController extends Controller
 {
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function beforeAction($action)
     {
         if(parent::beforeAction($action))
@@ -31,6 +36,10 @@ class BaseController extends Controller
         }
     }
 
+    /**
+     * 判断权限方法
+     * @param $permissions
+     */
     protected function checkRBAC($permissions)
     {
         if (!\Yii::$app->user->can($permissions)) {

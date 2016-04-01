@@ -8,8 +8,6 @@
 
 namespace backend\models;
 
-
-use backend\models\forms\AssignAttrGroupForm;
 use backend\models\giimodels\AttrGroupAssignBase;
 
 class AttrGroupAssgin extends AttrGroupAssignBase
@@ -20,8 +18,11 @@ class AttrGroupAssgin extends AttrGroupAssignBase
         return $groupAssign = $connection->createCommand('SELECT attr_group_assign.id as id, attrs.name as attr_name,attr_group.name as attr_group_name,attrs.id as attr_id FROM attrs,attr_group,attr_group_assign WHERE attr_group_assign.group_id='.$attrGroupId.' AND attr_group_assign.group_id=attr_group.id AND attr_group_assign.attr_id=attrs.id')->queryAll();
     }
 
+
     /**
-     * @param AssignAttrGroupForm $model
+     * 属性与属性组对应操作
+     * @param $model
+     * @throws \yii\db\Exception
      */
     public static function assign($model)
     {

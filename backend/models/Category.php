@@ -21,6 +21,9 @@ class Category extends CategoryBase
     const STATUS_NORMAL=1;
     const STATUS_DELETE=0;
 
+    /**
+     * @return array
+     */
     public static function getType()
     {
         return [
@@ -29,6 +32,10 @@ class Category extends CategoryBase
         ];
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     public static function generateType($type)
     {
         switch($type)
@@ -39,6 +46,9 @@ class Category extends CategoryBase
         }
     }
 
+    /**
+     * @return array
+     */
     public static function getStatus()
     {
         return [
@@ -47,6 +57,10 @@ class Category extends CategoryBase
         ];
     }
 
+    /**
+     * @param $status
+     * @return string
+     */
     public static function generateStatus($status)
     {
         switch($status)
@@ -79,12 +93,44 @@ class Category extends CategoryBase
         return Yii::$app->db->createCommand($sql)->queryAll();
     }
 
+    /**
+     * 获得所有的子集
+     * @param $id
+     * @return array
+     */
     public static function findDescendant($id)
     {
         $sql="SELECT c.* FROM ".parent::tableName()." AS c JOIN ".CategoryTreepathsBase::tableName()." AS t ON c.id=t.descendant WHERE t.ancestor=$id";
         return Yii::$app->db->createCommand($sql)->queryAll();
     }
 
+    /**
+     * 找节点的审核组，从当前节点起一直向父级找，找到后返回审核组对象
+     * @param $category
+     * @return null|static
+     */
+    public static function getUntilCheckGroup($category)
+    {
+        if ($category->check_group_id > 0) {
+            return CheckGroup::findOne($category->check_group_id);
+        } else {
+            $ancestors = self::findAncestorTree($category->id);
+            foreach ($ancestors as $ancestor) {
+                $categoryAncestor = Category::findOne($ancestor['ancestor']);
+                if ($categoryAncestor && $categoryAncestor->check_group_id > 0) {
+                    return CheckGroup::findOne($categoryAncestor->check_group_id);
+                    break;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 删除这些节点
+     * @param $arrayDescendants
+     * @throws \yii\db\Exception
+     */
     public static function deleteTheseCategory($arrayDescendants)
     {
             $idStr="";
@@ -101,6 +147,9 @@ class Category extends CategoryBase
 
     }
 
+    /**
+     * @param $id
+     */
     public static function deleteCategoryDescendant($id)
     {
         $descendants=self::findDescendant($id);
@@ -108,6 +157,10 @@ class Category extends CategoryBase
         self::deleteTheseCategory($descendants);
     }
 
+    /**
+     * @param $id
+     * @throws \yii\db\Exception
+     */
     public static function deleteCategoryTree($id)
     {
         //删除树
@@ -115,7 +168,14 @@ class Category extends CategoryBase
         Yii::$app->db->createCommand($sql)->execute();
     }
 
-    public static function moveCategory($id,$idTo)
+    /**
+     * 暂时还没有用
+     * @param $id
+     * @param $idTo
+     * @throws \Exception
+     * @throws \yii\db\Exception
+     */
+    public static function moveCategory($id, $idTo)
     {
         $sqlDelete="DELETE FROM ".CategoryTreepathsBase::tableName()." WHERE
                     descendant IN(
@@ -141,6 +201,9 @@ class Category extends CategoryBase
         }
     }
 
+    /**
+     * @return array
+     */
     public static function getAllCategoryToZtreeData()
     {
         $db=Yii::$app->db;
@@ -152,7 +215,13 @@ class Category extends CategoryBase
     }
 
 
-    public static function transferDataToZtree($categories,$trees,$params=array())
+    /**
+     * @param $categories
+     * @param $trees
+     * @param array $params
+     * @return array
+     */
+    public static function transferDataToZtree($categories, $trees, $params = array())
     {
         $relations=array();
 
@@ -188,9 +257,10 @@ class Category extends CategoryBase
     }
 
 
-
-
-
+    /**
+     * @param $nodeId
+     * @throws \yii\db\Exception
+     */
     public static function deleteOldAttrGroupAssign($nodeId)
     {
         $connection = \Yii::$app->db;
@@ -198,33 +268,27 @@ class Category extends CategoryBase
     }
 
 
-    public static function getAssignedAttrGroup($categoryId,$findParentAttrGroup=true)
-    {//处理循环读到父级，直到直到能继承的属性组
-
+    /**
+     * 处理循环读到父级，直到直到能继承的属性组
+     * @param $categoryId
+     * @param bool $findParentAttrGroup
+     * @return array|bool|null
+     */
+    public static function getAssignedAttrGroup($categoryId, $findParentAttrGroup = true)
+    {
         $thisCategoryAttrGroup=NodeAttrGroup::getAttrGroupByCategoryId($categoryId);
-
         if($thisCategoryAttrGroup)
         {
             return $thisCategoryAttrGroup;
         }
         else
         {
-            //$categoryAncestors = self::findAncestor($categoryId);
             $categoryAncestorsTrees = self::findAncestorTree($categoryId);
 
-            $findingId = $categoryId;
-            //if ($categoryAncestors && $categoryAncestorsTrees) {
             if ($categoryAncestorsTrees) {
-                    //$categoryAncestorsArray = array();
+
                     $categoryAncestorsTreesArray = array();
 
-                    //处理成'c'.$id=>$category形式，便于处理
-//                    $categoryIds = array();
-//                    foreach ($categoryAncestors as $categoryAncestor) {
-//                        $categoryAncestorsArray['c' . $categoryAncestor['id']] = $categoryAncestor;
-//                        $categoryIds[] = $categoryAncestor;
-//                    }
-                    //处理成[d.$descendant=>$ancestor]形式
                     $descendant = $categoryId;
                     $categoryIds=array($categoryId);
                     foreach ($categoryAncestorsTrees as $categoryAncestorsTree) {
@@ -232,8 +296,6 @@ class Category extends CategoryBase
                         $descendant = $categoryAncestorsTree['ancestor'];
                         $categoryIds[]= $categoryAncestorsTree['ancestor'];
                     }
-
-//                echo '<pre>';var_dump($categoryAncestorsTreesArray);exit();
 
                     $nodeAttrGroups = NodeAttrGroup::getCategoryAttrGroupByCategoryIds($categoryIds);
                     if ($nodeAttrGroups) {
@@ -262,6 +324,10 @@ class Category extends CategoryBase
     }
 
 
+    /**
+     * @param $nodeId
+     * @return array|null
+     */
     public static function getAssignedAttrByCategory($nodeId)
     {
         $assignedAttrGroup=self::getAssignedAttrGroup($nodeId);
@@ -273,7 +339,10 @@ class Category extends CategoryBase
     }
 
 
-
+    /**
+     * @param $userId
+     * @return mixed|string
+     */
     public static function getCategoryByUser($userId)
     {
         $cache=Yii::$app->cache;
@@ -281,17 +350,17 @@ class Category extends CategoryBase
         $data = $cache->get($key);
 
         if ($data === false) {
+
             // $data 在缓存中没有找到，则重新计算它的值
             $userGroup = UserGroup::getUserGroupsByUserId($userId);
             if ($userGroup) {
                 $userGroupIds = array();
                 foreach ($userGroup as $userGroupId) {
-                    $userGroupIds[] = $userGroupId['id'];
+                    $userGroupIds[] = $userGroupId['group_id'];
                 }
                 if (count($userGroupIds) > 0) {
                     $sqlNodesIds = "SELECT node_id FROM user_group_node WHERE user_group_id in(" . implode(',', $userGroupIds) . ")";
                     $authNodesIds = Yii::$app->db->createCommand($sqlNodesIds)->queryAll();
-
                     $authNodesIdArray = array();
                     if ($authNodesIds) {
                         foreach ($authNodesIds as $authNodesId) {
@@ -308,7 +377,7 @@ class Category extends CategoryBase
                         SELECT * FROM ".CategoryTreepathsBase::tableName()." WHERE path_length=1 AND descendant in(".implode(',',$authNodesIdArray).")";
                         $trees=Yii::$app->db->createCommand($sqlT)->queryAll();
 
-                        $data=json_encode(self::transferDataToZtree($categories,$trees,['url'=>'index?nodeid=']));
+                        $data = json_encode(self::transferDataToZtree($categories, $trees, ['url' => 'index?categoryid=']));
 
                         // 将 $data 存放到缓存供下次使用
                         $cache->set($key, $data);

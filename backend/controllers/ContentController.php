@@ -41,30 +41,28 @@ class ContentController extends BaseController
      * Lists all Content models.
      * @return mixed
      */
-    public function actionIndex($nodeid=1)
+    public function actionIndex($categoryid = 1)
     {
-        $node=null;
+        $category = null;
         $search_array=Yii::$app->request->queryParams;
 
         try{
-            $node=Category::findOne($nodeid);
-            $search_array['ContentSearch']['node_id']=$node->id;
+            $category = Category::findOne($categoryid);
+            $search_array['ContentSearch']['node_id'] = $category->id;
         }catch(\Exception $e){
             exit();
         }
 
-
-        //$allNodes=Nodes::getAllNodesData();
-        //=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?id='));
         $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
 
         $searchModel = new ContentSearch();
         $dataProvider = $searchModel->search($search_array);
 
 
-        $array_data=array('node'=>$node,'searchModel' => $searchModel,
+        $array_data = array('category' => $category, 'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'allNodes'=>$allNodesJson);
+            'allNodes' => $allNodesJson,
+        );
 
         return $this->render('index', $array_data);
     }
@@ -77,8 +75,6 @@ class ContentController extends BaseController
     public function actionView($id)
     {
         $model=$this->findModel($id);
-//        $allNodes=Nodes::getAllNodesData();
-//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'index?nodeid='));
         $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
         $node=Category::findOne(["id"=>$model->node_id]);
 
@@ -104,8 +100,6 @@ class ContentController extends BaseController
             FlashError::setFlashError(Yii::t('app','Can not found category by id:{id}',['id'=>$nodeid]));
             return $this->redirect(['index']);
         }
-//        $allNodes=Nodes::getAllNodesData();
-//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
         $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
         $attr_array=Category::getAssignedAttrByCategory($nodeid);
 
@@ -196,8 +190,6 @@ class ContentController extends BaseController
     {
         $model = $this->findModel($id);
         $contentAttrModel=new ContentAttr();
-//        $allNodes=Nodes::getAllNodesData();
-//        $allNodesJson=ZTreeDataTransfer::array2simpleJson($allNodes,array('id','pid','name'), array(),array('URL_PRE'=>'create?nodeid='));
         $allNodesJson=Category::getCategoryByUser(Yii::$app->user->id);
         $node=Category::findOne(["id"=>$model->node_id]);
         $addonAttrObj=ContentAttr::findOne(['content_id'=>$id]);
@@ -239,11 +231,7 @@ class ContentController extends BaseController
             if($update_flag)
             {
                 $contentAttrModel->content_id=$model->id;
-               // $contentAttrModel->setIsNewRecord(false);
-
-                //$update_flag=$contentAttrModel->save();
-                //var_dump($contentAttrModel->getErrors());exit();
-                $update_flag=ContentAttr::updateContentAttr($contentAttrModel);
+                $update_flag = ContentAttr::updateContentAttr($contentAttrModel);
             }
         }
 

@@ -164,14 +164,18 @@ class AuthItemController extends BaseController
     }
 
 
+    /**
+     * 增加一个权限项目，调用Yii自带的RBAC完成保存操作
+     * @param $id
+     * @return string
+     */
     public function actionAddChild($id)
     {
         $model=new RoleAddChildForm();
         $auth = Yii::$app->authManager;
+        $allPermissions = $auth->getPermissions();
         if (($model->role = $auth->getRole($id)) !== null)
         {
-
-
             $array_db_permissions=array();
             if(is_array($db_permissions=$auth->getPermissionsByRole($id)))
             {
@@ -181,7 +185,7 @@ class AuthItemController extends BaseController
             }
 
             $model->childItems=$array_db_permissions;
-            $allPermissions=$auth->getPermissions();
+
 
             if ($model->load(Yii::$app->request->post())) {
                 $childItems=$model->childItems;
@@ -200,11 +204,12 @@ class AuthItemController extends BaseController
 
 
             }
-            return $this->render('add-child', [
-                'model' => $model,
-                'allPermissions'=>$allPermissions,
-            ]);
+
         }
+        return $this->render('add-child', [
+            'model' => $model,
+            'allPermissions' => $allPermissions,
+        ]);
 
     }
 

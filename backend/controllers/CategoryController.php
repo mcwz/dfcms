@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\CategoryTreepaths;
+use backend\models\CheckGroup;
 use backend\services\error\FlashError;
 use Yii;
 use backend\models\Category;
@@ -163,6 +164,12 @@ class CategoryController extends Controller
     }
 
 
+    /**
+     * 给节点加属性组
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionAssignAttrGroup($id)
     {
         $node=$this->findModel($id);
@@ -186,6 +193,36 @@ class CategoryController extends Controller
         $array_data=array('node'=>$node,'attr_group'=>$attr_groups,'node_attr_group'=>$node_attr_group,
             'allNodes'=>$allNodesJson);
         return $this->render('assign-attr-group',$array_data);
+    }
+
+
+    /**
+     * 给节点加审核组
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionAssignCheckGroup($id)
+    {
+        $category = $this->findModel($id);
+        $checkGroup = CheckGroup::getAllCheckGroups();
+        $checkGroups = array();
+        foreach ($checkGroup as $cG) {
+            $checkGroups[$cG['id']] = $cG['name'];
+        }
+        $allNodesJson = json_encode(Category::getAllCategoryToZtreeData());
+
+        if ($category->load(Yii::$app->request->post())) {
+            if ($category->check_group_id > 0) {
+                $category->updated_at = time();
+                $category->save();
+                Yii::info(Yii::t('app/log', "Assign check Group(checkGroup id:{checkGroupId}) to category(category name:{categoryName})", ['checkGroupId' => $category->check_group_id, 'categoryName' => $category->name]), 'operations');
+            }
+        }
+
+        $array_data = array('category' => $category, 'checkGroup' => $checkGroups,
+            'allNodes' => $allNodesJson);
+        return $this->render('assign-check-group', $array_data);
     }
 
     /**

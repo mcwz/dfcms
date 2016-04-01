@@ -15,6 +15,11 @@ use Yii;
 
 class Checking extends CheckingBase
 {
+    /**
+     * 把每个人的审核信息保存到数据表
+     * @param $cid
+     * @throws \yii\db\Exception
+     */
     public static function saveCheckingSteps($cid)
     {
         $content=Content::findOne($cid);
@@ -51,27 +56,15 @@ class Checking extends CheckingBase
         }
     }
 
-    public static function ifICanCheck($content,$uid)
+    /**
+     * 判定自己能否审核，也会同时判断临近的几个步骤，如果相邻的步骤都能审核，那么会直接通过
+     * @param $content
+     * @param $uid
+     * @throws \yii\db\Exception
+     */
+    public static function ifICanCheck($content, $uid)
     {
         $connection=Yii::$app->db;
-//        $nowCheckStepResult=$connection->createCommand("SELECT min(step) as now_step FROM checking WHERE content_id=".$content->id)->queryOne();
-//        if($nowCheckStepResult)
-//        {
-//            $nowCheckStep=$nowCheckStepResult['now_step'];
-//            $checkingRecords=$connection->createCommand("SELECT * FROM checking
-//                          WHERE content_id=".$content->id." AND user_id=".$uid." AND checked=0 AND step=".$nowCheckStep." ORDER BY step ASC")->queryAll();
-//            if($checkingRecords && count($checkingRecords)>0)
-//            {
-//                    if($checkingRecords[0]['type']==CheckStep::CHECK_STEP_TYPE_UNION)
-//                    {
-//                        $connection->createCommand("UPDATE checking SET checked=1 WHERE content_id=".$content->id." AND  user_id=".$uid)->execute();
-//                    }
-//                    else
-//                    {
-//                        $connection->createCommand("UPDATE checking SET checked=1 WHERE id=".$checkingRecord['id'])->execute();
-//                    }
-//            }
-//        }
 
         $unCheckingSteps=array();
         $sql="SELECT DISTINCT(step) as now_step FROM checking WHERE checked=0 AND content_id=".$content->id." ORDER BY step ASC";

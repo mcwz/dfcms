@@ -13,6 +13,10 @@ use backend\models\giimodels\ContentAttrBase;
 
 class ContentAttr extends ContentAttrBase
 {
+    /**
+     * @param $id
+     * @return ContentAttr
+     */
     public static function getByContentId($id)
     {
         $contentAttr=new ContentAttr();
@@ -28,6 +32,11 @@ class ContentAttr extends ContentAttrBase
         return $contentAttr;
     }
 
+    /**
+     * @param $model
+     * @return int
+     * @throws \yii\db\Exception
+     */
     public static function updateContentAttr($model)
     {
         $command=\Yii::$app->db->createCommand()->update('content_attr', ['content' => $model->content,'attr'=>$model->attr], 'content_id = '.$model->content_id);
