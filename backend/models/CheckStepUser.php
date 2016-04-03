@@ -32,6 +32,32 @@ class CheckStepUser extends CheckStepUserBase
 
 
     /**
+     * 根据提供的$checkStepUserId删除check_step_user表中的数据，同时删除还没有审核的流程记录
+     * @param $checkStepUserId
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public static function deleteCheckStepUser($checkStepUserId)
+    {
+        $checkStepUser=CheckStepUser::findOne($checkStepUserId);
+        if($checkStepUser)
+        {
+            $connection=\Yii::$app->db;
+            $transaction = $connection->beginTransaction();
+            try {
+                Checking::deleteCheckingByCheckStepUserId($checkStepUser->id);
+                $checkStepUser->delete();
+                $transaction->commit();
+                return true;
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * @param $contentId
      * @return array|null
      */
@@ -61,4 +87,35 @@ user.username FROM check_step_user,check_step,`user` WHERE
         }
         return null;
     }
+
+
+    /**
+     * @param $stepId
+     * @param $userIdArray
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public static function addUsersToCheckStep($stepId, $userIdArray)
+    {
+        $insertArray=array();
+        $created_at=time();
+        foreach($userIdArray as $userId)
+        {
+            $insertArray[]=array('step_id'=>$stepId,'user_id'=>$userId,'created_at'=>$created_at);
+        }
+        return \Yii::$app->db->createCommand()->batchInsert('check_step_user', ['step_id', 'user_id','created_at'], $insertArray)->execute();
+
+    }
+
+
+    /**
+     * @param $checkStepId
+     * @return static[]
+     */
+    public static function getCheckStepUsersByCheckStepId($checkStepId)
+    {
+        return CheckStepUser::findAll(['step_id'=>$checkStepId]);
+    }
+
+
 }

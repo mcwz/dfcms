@@ -1255,3 +1255,7 @@ div.required label:after {
 .one_check_user{margin: auto 15px;}
 .col_title150{width: 150px;}
 .col_title200{width: 200px;}
+
+.userlist4add{padding: 10px;margin: 10px;border: 1px dotted #c0c0c0}
+.userlist4add label{margin: auto 10px;}
+.userlist4add button{display: block;margin-top: 10px;margin-bottom: 10px;}

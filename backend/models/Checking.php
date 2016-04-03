@@ -136,4 +136,10 @@ class Checking extends CheckingBase
         }
 
     }
+
+
+    public static function deleteCheckingByCheckStepUserId($checkStepUserId)
+    {
+        return Yii::$app->db->createCommand("DELETE FROM ".parent::tableName()." WHERE checked=0 AND check_step_user_id=".$checkStepUserId)->execute();
+    }
 }

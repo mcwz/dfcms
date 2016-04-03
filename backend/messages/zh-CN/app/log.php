@@ -19,6 +19,7 @@
 return [
     'Assign attrGroup(attrGroup id:{attr_group_id}) to node(category name:{nodeName})' => '',
     'Assign attrGroup(attrGroup id:{attr_group_id}) to node(node name:{nodeName})' => '',
+    'Assign check Group(checkGroup id:{checkGroupId}) to category(category name:{categoryName})' => '',
     'Create Check Group(Group:{GroupName})' => '',
     'Create Check step' => '',
     'Delete Check Group(Group:{GroupName})' => '',
