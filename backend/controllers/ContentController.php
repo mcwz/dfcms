@@ -118,6 +118,7 @@ class ContentController extends BaseController
             $contentAttrModel->load(Yii::$app->request->post()) &&
             $urlModel->load(Yii::$app->request->post())
         ) {
+//            echo '<pre>';print_r(Yii::$app->request->post());exit();
 
             if($activeAttrModel->validate())
             {
