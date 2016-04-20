@@ -52,8 +52,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'index_t_path',
             'cover_t_path',
             ['attribute'=>'status','value'=> \backend\models\Category::generateStatus($model->status)],
-            'created_at',
-            'updated_at',
+            [
+                'attribute' => 'created_at',
+                'format' => ['date', 'php:Y-m-d H:i:s'],
+            ],
+            [
+                'attribute' => 'updated_at',
+                'format' => ['date', 'php:Y-m-d H:i:s'],
+            ],
         ],
     ]) ?>
 

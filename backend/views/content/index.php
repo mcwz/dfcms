@@ -43,7 +43,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => ['date', 'php:Y-m-d H:i:s'],
             ],
             // 'updated_at',
-             'status',
+
+            [
+                'attribute' => 'status',
+                'filter' => Html::activeDropDownList($searchModel, 'status', \backend\models\Content::getSearchStatus(), ['class' => 'form-control']),
+                'value' => function ($model) {
+                    return \backend\models\Content::getStatusStr($model->status);
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn','header'=>Yii::t('app', 'Operate'),'template' => '{checking/check} {view} {update} {delete}',
                 'buttons' => [
