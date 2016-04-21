@@ -137,6 +137,27 @@ class Checking extends CheckingBase
 
     }
 
+    public static function getCheckingStatusByCheckStepUsers($checkStepUsersModels)
+    {
+        $checkingStatus = array();
+        if ($checkStepUsersModels) {
+            $check_step_user_ids = array();
+            foreach ($checkStepUsersModels as $checkStepUsersModel) {
+                $check_step_user_ids[] = $checkStepUsersModel['check_step_user_id'];
+            }
+            if (count($check_step_user_ids) > 0) {
+                $sql = "SELECT * FROM " . parent::tableName() . " WHERE check_step_user_id in(" . implode(',', $check_step_user_ids) . ")";
+                $allChecking = Yii::$app->db->createCommand($sql)->queryAll();
+                if ($allChecking) {
+                    foreach ($allChecking as $checking) {
+                        $checkingStatus['checkStep_' . $checking['check_step_id']]['userId_' . $checking['user_id']] = $checking['checked'];
+                    }
+                }
+            }
+        }
+        return $checkingStatus;
+    }
+
 
     public static function deleteCheckingByCheckStepUserId($checkStepUserId)
     {

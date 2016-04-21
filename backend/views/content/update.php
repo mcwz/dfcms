@@ -24,14 +24,26 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         </div>
         <div class="col-md-9 col-md-offset-3">
 
+            <?php
+            $renderArray = [
+                'model' => $model,
+                'contentAttrModel' => $contentAttrModel,
+                'attr_array' => $attr_array,
+                'activeAttrModel' => $activeAttrModel,
+                'urlModel' => $urlModel,
+            ];
 
-    <?= $this->render('_form', [
-        'model' => $model,
-        'contentAttrModel'=>$contentAttrModel,
-        'attr_array'=>$attr_array,
-        'activeAttrModel'=>$activeAttrModel,
-        'urlModel'=>$urlModel,
-    ]) ?>
+            if (isset($isCheck) && $isCheck === true) {
+                if (isset($check)) {
+                    $renderArray['check'] = $check;
+                } else {
+                    $renderArray['check'] = array();
+                }
+            } else {
+                $renderArray['check'] = false;
+            }
+            ?>
+            <?= $this->render('_form', $renderArray) ?>
 
         </div>
     </div>

@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else {
                             $type = '';
                         }
-                        return Html::a('<span class="glyphicon glyphicon-check"></span>', \yii\helpers\Url::to('/checking/check?' . $type . 'cid=' . $model->id . '&categoryid=' . $model->node_id), ['title' => Yii::t('app', 'Send To Check')]);
+                        return Html::a('<span class="glyphicon glyphicon-check"></span>', \yii\helpers\Url::to('/content/update?id=' . $model->id . '&isCheck=2'), ['title' => Yii::t('app', 'Send To Check')]);
                     },
                 ],
             ],

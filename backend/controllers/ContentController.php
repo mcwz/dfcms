@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Category;
+use backend\models\Checking;
 use backend\models\ContentAttr;
 use backend\libtool\ObjectArrayParse;
 use backend\models\Url;
@@ -14,6 +15,7 @@ use backend\models\Content;
 use backend\models\search\ContentSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\models\CheckStepUser;
 
 /**
  * ContentController implements the CRUD actions for Content model.
@@ -187,7 +189,7 @@ class ContentController extends BaseController
      * @param string $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $isCheck = 0)
     {
         $model = $this->findModel($id);
         $contentAttrModel=new ContentAttr();
@@ -199,6 +201,7 @@ class ContentController extends BaseController
         $attr_array=$addonAttr['attr_data_model'];
         $activeAttrModel=ActiveAttrFactory::build($attr_array);
         $urlModel=Url::findOne(['relate_id'=>$model->id,'url_type'=>Url::URL_TYPE_ARTICLE]);
+
 
 
         $update_flag=false;
@@ -245,6 +248,19 @@ class ContentController extends BaseController
             'urlModel'=>$urlModel,
         ];
 
+        if ($isCheck != 0) {
+            //是审核步骤，额外加上审核信息
+            $arrayUpdateData['isCheck'] = true;
+            $checkStepUsersModels = CheckStepUser::getCheckStepUsersByContentId($model->id);
+            $checkingStatus = Checking::getCheckingStatusByCheckStepUsers($checkStepUsersModels);
+            if ($checkStepUsersModels) {
+                $arrayUpdateData['check'] = [
+                    'checkStepUsersModels' => $checkStepUsersModels,
+                    'checkingStatus' => $checkingStatus
+                ];
+            }
+        }
+
 
         if($update_flag)
         {
@@ -264,8 +280,14 @@ class ContentController extends BaseController
     public function actionDelete($id)
     {
         $model=$this->findModel($id);
+        $attrModel = ContentAttr::findOne(['content_id' => $id]);
+
         Yii::info( Yii::t('app/log', "Delete content(content title:{ContentTitle},content id:{contentId})", ['contentTitle' =>$model->title,'contentId'=>$model->id]), 'operations');
+        if ($attrModel !== null) {
+            $attrModel->delete();
+        }
         $model->delete();
+
         return $this->redirect(['index']);
     }
 

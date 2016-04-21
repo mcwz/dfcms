@@ -26,14 +26,84 @@ use backend\libtool\ModelError;
     <div role="tabpanel">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab" aria-expanded="true"><?=Yii::t('app','Content Base Tab')?></a></li>
+            <?php
+            if ($check !== false) {
+                ?>
+                <li role="presentation" class="active"><a href="#check" aria-controls="check" role="tab"
+                                                          data-toggle="tab"
+                                                          aria-expanded="true"><?= Yii::t('app', 'Content Check Tab') ?></a>
+                </li>
+                <?php
+            }
+            ?>
+            <li role="presentation" <?php if ($check === false) echo 'class="active"'; ?> ><a href="#home"
+                                                                                              aria-controls="home"
+                                                                                              role="tab"
+                                                                                              data-toggle="tab"
+                                                                                              aria-expanded="true"><?= Yii::t('app', 'Content Base Tab') ?></a>
+            </li>
             <li role="presentation" class=""><a href="#attr" aria-controls="attr" role="tab" data-toggle="tab" aria-expanded="false"><?=Yii::t('app','Content Attr Tab')?></a></li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="home">
-                <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+            <div role="tabpanel" class="tab-pane <?php if ($check !== false) {
+                echo 'active';
+            } ?>" id="check">
+                <div class="row">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="col_title200"><?= Yii::t('app', 'Content Title') ?></th>
+                            <td><?= $model->title ?></td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
 
+                        <?php
+                        $step = 0;
+                        /** @var array $checkStepUsersModels */
+                        $checkStepUsersModels = $check['checkStepUsersModels'];
+                        $checkingStatus = $check['checkingStatus'];
+
+                        $checkStepUsersModelCount = count($checkStepUsersModels);
+                        for ($i = 0; $i < $checkStepUsersModelCount; $i++) {
+                            if ($checkStepUsersModels[$i]['step'] != $step) {
+                                echo '<tr><th  class="col_title200">' . Yii::t('app', 'Step {stepNum}(Check Type-{checkType}):',
+                                        ['stepNum' => $checkStepUsersModels[$i]['step'], 'checkType' => \backend\models\CheckStep::getLabel($checkStepUsersModels[$i]['type'])]) . '</th><td>';
+                            }
+
+                            //以下10行是显示每个审核人以及审核状态
+                            echo '<span class="one_check_user ';
+                            if (isset($checkingStatus['checkStep_' . $checkStepUsersModels[$i]['check_step_id']]['userId_' . $checkStepUsersModels[$i]['user_id']])) {
+                                $checkStatus = $checkingStatus['checkStep_' . $checkStepUsersModels[$i]['check_step_id']]['userId_' . $checkStepUsersModels[$i]['user_id']];
+                                if ($checkStatus == 1)
+                                    echo 'glyphicon glyphicon-ok"  title="' . Yii::t('app', 'Already Checked') . '"';
+                                else
+                                    echo '"';
+                            } else {
+                                echo '"';
+                            }
+                            echo ' >' . $checkStepUsersModels[$i]['username'] . '</span>';
+
+                            $step = $checkStepUsersModels[$i]['step'];
+                            if (($i + 1) < $checkStepUsersModelCount && $checkStepUsersModels[$i + 1]['step'] != $step) {
+                                echo '</td></tr>';
+                            }
+
+                        }
+
+                        ?>
+                    </table>
+
+                    <p>
+                        <?= Html::a(Yii::t('app', 'Send To Check'), ['/checking/check', 'cid' => $model->id, 'categoryid' => $model->node_id], ['class' => 'btn btn-primary']) ?>
+                    </p>
+
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane <?php if ($check === false) {
+                echo 'active';
+            } ?>" id="home">
+                <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
                 <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
                 <?php
@@ -97,7 +167,7 @@ use backend\libtool\ModelError;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Save') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Save') : Yii::t('app', 'Update Content'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
