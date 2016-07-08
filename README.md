@@ -14,6 +14,12 @@ DFCMS 一个很普通的CMS
 
 * 该程序仅仅用于Yii2以及CMS原型交流学习之用，因未做充分测试，请勿用于生产环境。 *
 
+![image](https://github.com/mcwz/dfcms/blob/master/images/backend1.jpg)
+
+![image](https://github.com/mcwz/dfcms/blob/master/images/backend2.jpg)
+
+![image](https://github.com/mcwz/dfcms/blob/master/images/backend3.jpg)
+
 ## requirement
 
 mysql 5.7+
