@@ -24,11 +24,13 @@ class SiteController extends Controller
         }
         else{
             $templatePath=$templateRoute->getTemplatePath();
+
             $template_type=$templateRoute->getUrlType();
             $templateDefine=new $templatePath(['url'=>$visit_url_md5]);
             $viewPath=$templateDefine->getViewFilename();
             $viewParams=$templateDefine->getParams();
             $viewParams['templateBasePath']=$templateRoute->getTemplateBasePath();
+
             return $this->renderFile($viewPath,$viewParams);
         }
 

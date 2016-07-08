@@ -9,6 +9,7 @@
 namespace frontend\service;
 
 use backend\libtool\TreeToSortArray;
+use backend\models\Category;
 use backend\models\Content;
 use backend\models\Nodes;
 use backend\models\Url;
@@ -191,7 +192,7 @@ class TemplateRoute
                 $content=Content::findOne(['id'=>$urlObj->relate_id]);
                 if($content)
                 {
-                    return ['nowNode'=>Nodes::findOne(['id'=>$content['node_id']]),'allNodes'=>Nodes::getAllParentNodes($content['node_id'])];
+                    return ['nowNode'=>Category::findOne(['id'=>$content['node_id']]),'allNodes'=>Category::getAllParentNodes($content['node_id'])];
                 }
                 else
                 {
@@ -203,7 +204,7 @@ class TemplateRoute
                 $node=Nodes::findOne(['id'=>$urlObj->relate_id]);
                 if($node)
                 {
-                    return ['nowNode'=>$node,'allNodes'=>Nodes::getAllParentNodes($urlObj->relate_id)];
+                    return ['nowNode'=>$node,'allNodes'=>Category::getAllParentNodes($urlObj->relate_id)];
                 }
                 else
                 {

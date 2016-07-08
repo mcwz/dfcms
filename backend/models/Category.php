@@ -390,4 +390,28 @@ class Category extends CategoryBase
         return $data;
     }
 
+
+    public static function getAllParentNodes($id)
+    {
+        if(is_numeric($id) && $id>0)
+        {
+            $sql="SELECT T2.*
+                    FROM(
+                        SELECT
+                            @r AS _id,
+                            (SELECT @r := pid FROM nodes WHERE id = _id) AS parent_id,
+                            @l := @l + 1 AS lvl
+                        FROM
+                            (SELECT @r := ".$id.", @l := 0) vars,
+                            nodes h
+                        WHERE @r <> 0) T1
+                    JOIN nodes T2
+                    ON T1._id = T2.id
+                    ORDER BY T1.lvl DESC";
+            return Yii::$app->db->createCommand($sql)->queryAll();
+        }
+        else
+            return null;
+    }
+
 }

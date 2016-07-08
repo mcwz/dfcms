@@ -177,7 +177,7 @@ class ContentController extends BaseController
 
         if($create_flag){
             Yii::info( Yii::t('app/log', "Create content(content title:{contentTitle},content id:{contentId})", ['contentTitle' =>$model->title,'contentId'=>$model->id]), 'operations');
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index', 'categoryid' => $model->node_id]);
         } else {
             return $this->render('create', $array_data);
         }
